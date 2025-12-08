@@ -134,7 +134,7 @@ if [ -f "docs/hyperion-prompt.html" ]; then
     fi
     
     # Check file size (should not be empty or too small)
-    FILE_SIZE=$(stat -c%s "docs/hyperion-prompt.html" 2>/dev/null || stat -f%z "docs/hyperion-prompt.html" 2>/dev/null || echo "0")
+    FILE_SIZE=$(wc -c < "docs/hyperion-prompt.html" 2>/dev/null || echo "0")
     if [ "$FILE_SIZE" -gt 1000 ]; then
         check_pass "HTML file has substantial content (${FILE_SIZE} bytes)"
     else
@@ -163,7 +163,7 @@ if git rev-parse --git-dir > /dev/null 2>&1; then
     check_pass "Current branch: $CURRENT_BRANCH"
     
     # Check for commits
-    COMMIT_COUNT=$(git rev-list --count HEAD)
+    COMMIT_COUNT=$(git rev-list --count HEAD 2>/dev/null || echo "0")
     if [ "$COMMIT_COUNT" -gt 0 ]; then
         check_pass "Repository has $COMMIT_COUNT commit(s)"
     else
@@ -195,7 +195,6 @@ else
 fi
 
 if command -v bash &> /dev/null; then
-    BASH_VERSION=$BASH_VERSION
     check_pass "bash is available (version $BASH_VERSION)"
 else
     check_fail "bash is not available"
@@ -205,11 +204,11 @@ fi
 print_section "Repository Health"
 
 # Count files
-TOTAL_FILES=$(find . -type f ! -path "./.git/*" | wc -l)
+TOTAL_FILES=$(find . -type f ! -path "./.git/*" -print0 | grep -zc .)
 check_pass "Repository contains $TOTAL_FILES file(s)"
 
 # Check for large files
-LARGE_FILES=$(find . -type f ! -path "./.git/*" -size +1M | wc -l)
+LARGE_FILES=$(find . -type f ! -path "./.git/*" -size +1M -print0 2>/dev/null | grep -zc .)
 if [ "$LARGE_FILES" -eq 0 ]; then
     check_pass "No large files (>1MB) found"
 else
@@ -229,7 +228,7 @@ echo -e "  ${YELLOW}Warnings:${NC} $WARN_COUNT"
 echo ""
 
 # Calculate health percentage
-if [ $TOTAL_CHECKS -gt 0 ]; then
+if [ "$TOTAL_CHECKS" -gt 0 ]; then
     HEALTH_PERCENTAGE=$(( (PASS_COUNT * 100) / TOTAL_CHECKS ))
     
     if [ $HEALTH_PERCENTAGE -ge 90 ]; then
@@ -249,7 +248,7 @@ echo ""
 echo "================================================================"
 
 # Exit with appropriate code based on failures
-if [ $FAIL_COUNT -gt 0 ]; then
+if [ "$FAIL_COUNT" -gt 0 ]; then
     exit 1
 else
     exit 0

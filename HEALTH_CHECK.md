@@ -64,7 +64,7 @@ The health check calculates an overall system health percentage:
 5. ✓ README mentions DeanOS
 6. ✓ Hyperion prompt interface exists
 7. ✓ HTML has valid DOCTYPE
-8. ✓ HTML structure is valid
+8. ✓ HTML has title tag
 9. ✓ Hyperion AI branding present
 10. ✓ Command input element present
 11. ✓ HTML file has substantial content
@@ -76,7 +76,8 @@ The health check calculates an overall system health percentage:
 17. ✓ Git is installed
 18. ✓ Bash is available
 19. ✓ File count validation
-20. ✓ Large file detection
+20. ✓ Repository contains files
+21. ✓ Large file detection
 
 ## Interpreting Results
 
