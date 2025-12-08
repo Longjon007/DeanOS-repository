@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyperion AI - Mythic Power. Relentless Intelligence.</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E⚡%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Color Palette */
+            --obsidian: #0a0a14;
+            --deep-indigo: #1a1a2e;
+            --midnight-blue: #16213e;
+            --molten-gold: #d4af37;
+            --bright-gold: #ffd700;
+            --violet-accent: #8b5cf6;
+            --aurora-pink: #ec4899;
+            --aurora-cyan: #06b6d4;
+            --shadow-glow: rgba(212, 175, 55, 0.4);
+            --error-red: #ef4444;
+            --error-glow: rgba(239, 68, 68, 0.5);
+            
+            /* Typography */
+            --font-serif: 'Merriweather', serif;
+            --font-sans: 'DM Sans', sans-serif;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(135deg, var(--obsidian) 0%, var(--deep-indigo) 50%, var(--midnight-blue) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f8f9fa;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(26, 26, 46, 0.85);
+            border: 2px solid var(--molten-gold);
+            border-radius: 16px;
+            padding: 48px;
+            box-shadow: 
+                0 0 40px var(--shadow-glow),
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .container::before {
+            content: '⚡';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 60px;
+            opacity: 0.2;
+            filter: drop-shadow(0 0 20px var(--molten-gold));
+            animation: sigilGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes sigilGlow {
+            0%, 100% { 
+                opacity: 0.2; 
+                filter: drop-shadow(0 0 20px var(--molten-gold));
+            }
+            50% { 
+                opacity: 0.4; 
+                filter: drop-shadow(0 0 40px var(--bright-gold));
+            }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .title {
+            font-family: var(--font-serif);
+            font-size: 42px;
+            font-weight: 900;
+            color: var(--bright-gold);
+            margin-bottom: 12px;
+            text-shadow: 
+                0 0 20px var(--shadow-glow),
+                0 4px 8px rgba(0, 0, 0, 0.6);
+            letter-spacing: 1px;
+        }
+        
+        .tagline {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--molten-gold);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            opacity: 0.95;
+        }
+        
+        .one-liner {
+            font-size: 15px;
+            color: #cbd5e1;
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        
+        .prompt-box {
+            margin-top: 32px;
+        }
+        
+        .label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--violet-accent);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .command-input {
+            width: 100%;
+            padding: 16px 20px;
+            font-family: var(--font-sans);
+            font-size: 16px;
+            color: #f8f9fa;
+            background: rgba(10, 10, 20, 0.6);
+            border: 2px solid var(--molten-gold);
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s ease;
+            caret-color: var(--bright-gold);
+            box-shadow: 
+                0 0 0 0 rgba(212, 175, 55, 0),
+                inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .command-input::placeholder {
+            color: #64748b;
+            font-style: italic;
+        }
+        
+        .command-input:hover {
+            border-color: var(--bright-gold);
+            box-shadow: 
+                0 0 20px var(--shadow-glow),
+                inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            background: rgba(10, 10, 20, 0.8);
+        }
+        
+        .command-input:focus {
+            border-color: var(--bright-gold);
+            box-shadow: 
+                0 0 30px var(--shadow-glow),
+                0 0 60px rgba(139, 92, 246, 0.3),
+                inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            background: rgba(10, 10, 20, 0.9);
+            animation: auroraShimmer 2s ease-in-out infinite;
+        }
+        
+        @keyframes auroraShimmer {
+            0%, 100% {
+                box-shadow: 
+                    0 0 30px var(--shadow-glow),
+                    0 0 60px rgba(139, 92, 246, 0.3),
+                    inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            }
+            25% {
+                box-shadow: 
+                    0 0 30px var(--shadow-glow),
+                    0 0 60px rgba(236, 72, 153, 0.3),
+                    inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            }
+            50% {
+                box-shadow: 
+                    0 0 30px var(--shadow-glow),
+                    0 0 60px rgba(6, 182, 212, 0.3),
+                    inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            }
+            75% {
+                box-shadow: 
+                    0 0 30px var(--shadow-glow),
+                    0 0 60px rgba(139, 92, 246, 0.3),
+                    inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            }
+        }
+        
+        .command-input.error {
+            border-color: var(--error-red);
+            box-shadow: 
+                0 0 20px var(--error-glow),
+                inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            animation: errorShake 0.4s ease;
+        }
+        
+        .command-input.error:focus {
+            border-color: var(--error-red);
+            box-shadow: 
+                0 0 30px var(--error-glow),
+                inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        @keyframes errorShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            .container {
+                padding: 32px 24px;
+            }
+            
+            .title {
+                font-size: 32px;
+            }
+            
+            .tagline {
+                font-size: 16px;
+            }
+            
+            .one-liner {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Hyperion AI</h1>
+            <p class="tagline">Mythic power. Relentless intelligence.</p>
+            <p class="one-liner">Builds flawless, wealth-generating apps at lightspeed.</p>
+        </div>
+        
+        <div class="prompt-box">
+            <label class="label" for="command">Command the Titan</label>
+            <div class="input-wrapper">
+                <input 
+                    type="text" 
+                    id="command" 
+                    class="command-input" 
+                    placeholder="Issue a command…"
+                    autocomplete="off"
+                />
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Optional: Demo error state toggle
+        const input = document.querySelector('.command-input');
+        
+        // You can programmatically add error class like this:
+        // input.classList.add('error');
+        
+        // Example: Remove error class on input
+        input.addEventListener('input', function() {
+            this.classList.remove('error');
+        });
+    </script>
+</body>
+</html>
