@@ -234,26 +234,21 @@ if [ $TOTAL_CHECKS -gt 0 ]; then
     
     if [ $HEALTH_PERCENTAGE -ge 90 ]; then
         echo -e "  ${GREEN}System Health: ${HEALTH_PERCENTAGE}% - EXCELLENT${NC}"
-        EXIT_CODE=0
     elif [ $HEALTH_PERCENTAGE -ge 75 ]; then
         echo -e "  ${YELLOW}System Health: ${HEALTH_PERCENTAGE}% - GOOD${NC}"
-        EXIT_CODE=0
     elif [ $HEALTH_PERCENTAGE -ge 50 ]; then
         echo -e "  ${YELLOW}System Health: ${HEALTH_PERCENTAGE}% - FAIR${NC}"
-        EXIT_CODE=1
     else
         echo -e "  ${RED}System Health: ${HEALTH_PERCENTAGE}% - POOR${NC}"
-        EXIT_CODE=1
     fi
 else
     echo -e "  ${RED}System Health: UNKNOWN${NC}"
-    EXIT_CODE=1
 fi
 
 echo ""
 echo "================================================================"
 
-# Exit with appropriate code
+# Exit with appropriate code based on failures
 if [ $FAIL_COUNT -gt 0 ]; then
     exit 1
 else

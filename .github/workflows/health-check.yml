@@ -23,16 +23,8 @@ jobs:
       - name: Make health check script executable
         run: chmod +x health_check.sh
       
-      - name: Run DeanOS Health Check
-        run: ./health_check.sh
-      
-      - name: Upload health check results
-        if: always()
-        run: |
-          echo "Health check completed with exit code: $?"
-          
-      - name: Generate health report
-        if: always()
+      - name: Run DeanOS Health Check and Generate Report
+        id: health_check
         run: |
           echo "# DeanOS Health Check Report" > health_report.md
           echo "" >> health_report.md
@@ -41,9 +33,11 @@ jobs:
           echo "## Health Check Results" >> health_report.md
           echo "" >> health_report.md
           echo '```' >> health_report.md
-          ./health_check.sh >> health_report.md 2>&1 || true
+          ./health_check.sh 2>&1 | tee -a health_report.md
+          HEALTH_EXIT_CODE=${PIPESTATUS[0]}
           echo '```' >> health_report.md
           cat health_report.md
+          exit $HEALTH_EXIT_CODE
       
       - name: Comment on PR (if applicable)
         if: github.event_name == 'pull_request'
