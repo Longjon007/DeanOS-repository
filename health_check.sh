@@ -208,8 +208,7 @@ TOTAL_FILES=$(find . -type f ! -path "./.git/*" -print0 | grep -zc .)
 check_pass "Repository contains $TOTAL_FILES file(s)"
 
 # Check for large files
-LARGE_FILES=$(find . -type f ! -path "./.git/*" -size +1M -print0 2>/dev/null | grep -zc . 2>/dev/null || echo "0")
-LARGE_FILES=${LARGE_FILES%%$'\n'*}
+LARGE_FILES=$(find . -type f ! -path "./.git/*" -size +1M -print0 2>/dev/null | grep -zc .)
 if [ "$LARGE_FILES" -eq 0 ]; then
     check_pass "No large files (>1MB) found"
 else
