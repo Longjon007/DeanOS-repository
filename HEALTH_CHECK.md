@@ -1,8 +1,8 @@
-# DeanOS Health Check System
+# Hyperion AI Health Check System
 
 ## Overview
 
-The DeanOS Health Check system provides comprehensive validation and monitoring of the DeanOS autonomous AI system. It ensures all critical components are operational and properly configured.
+The Hyperion AI Health Check system provides comprehensive validation and monitoring of the Hyperion AI autonomous AI system. It ensures all critical components are operational and properly configured.
 
 ## Components
 
@@ -61,7 +61,7 @@ The health check calculates an overall system health percentage:
 2. ✓ Documentation directory (docs/) exists
 3. ✓ Git repository is initialized
 4. ✓ .github directory exists
-5. ✓ README mentions DeanOS
+5. ✓ README mentions Hyperion AI
 6. ✓ Hyperion prompt interface exists
 7. ✓ HTML has valid DOCTYPE
 8. ✓ HTML has title tag

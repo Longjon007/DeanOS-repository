@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# DeanOS Health Check Script
-# This script performs a comprehensive health check on the DeanOS system
+# Hyperion AI Health Check Script
+# This script performs a comprehensive health check on the Hyperion AI system
 
 # Don't exit on errors, we want to run all checks
 set +e
@@ -22,7 +22,7 @@ WARN_COUNT=0
 print_header() {
     echo ""
     echo "================================================================"
-    echo "  DeanOS Health Check"
+    echo "  Hyperion AI Health Check"
     echo "  Autonomous experimentally trained AI - System Validation"
     echo "================================================================"
     echo ""
@@ -90,11 +90,11 @@ if [ -f "README.md" ]; then
     if [ -s "README.md" ]; then
         check_pass "README.md has content"
         
-        # Check for DeanOS mention
-        if grep -q "DeanOS" "README.md"; then
-            check_pass "README.md mentions DeanOS"
+        # Check for Hyperion AI mention
+        if grep -q "Hyperion AI" "README.md"; then
+            check_pass "README.md mentions Hyperion AI"
         else
-            check_warn "README.md does not mention DeanOS"
+            check_warn "README.md does not mention Hyperion AI"
         fi
     else
         check_fail "README.md is empty"
