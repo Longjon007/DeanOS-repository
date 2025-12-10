@@ -170,6 +170,44 @@ else
     check_warn "Mobile app directory is missing"
 fi
 
+# Check Web App
+if [ -d "web" ]; then
+    check_pass "Web app directory exists"
+
+    if [ -f "web/app/page.tsx" ]; then
+        check_pass "Web app entry point (page.tsx) exists"
+    else
+        check_fail "Web app entry point (page.tsx) is missing"
+    fi
+
+    if [ -f "web/utils/supabase/server.ts" ]; then
+        check_pass "Supabase server client exists"
+    else
+        check_fail "Supabase server client is missing"
+    fi
+
+    if [ -f "web/prisma/schema.prisma" ]; then
+        check_pass "Prisma schema exists"
+    else
+        check_fail "Prisma schema is missing"
+    fi
+
+    if [ -f "web/package.json" ]; then
+        check_pass "Web app package.json exists"
+    else
+        check_fail "Web app package.json is missing"
+    fi
+else
+    check_warn "Web app directory is missing"
+fi
+
+# Check MCP Configuration
+if [ -f "mcp.json" ]; then
+    check_pass "MCP configuration exists"
+else
+    check_warn "MCP configuration is missing"
+fi
+
 # Check 4: Git Configuration
 print_section "Git Configuration"
 
