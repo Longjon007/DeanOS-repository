@@ -101,9 +101,10 @@ if [ -f "README.md" ]; then
     fi
 fi
 
-# Check 3: Hyperion AI Interface
-print_section "Hyperion AI Interface"
+# Check 3: Hyperion AI Interface & Mobile App
+print_section "Hyperion AI Interface & Mobile App"
 
+# Check Web Interface
 if [ -f "docs/hyperion-prompt.html" ]; then
     check_pass "Hyperion prompt interface exists"
     
@@ -142,6 +143,31 @@ if [ -f "docs/hyperion-prompt.html" ]; then
     fi
 else
     check_fail "Hyperion prompt interface is missing"
+fi
+
+# Check Mobile App
+if [ -d "app" ]; then
+    check_pass "Mobile app directory exists"
+
+    if [ -f "app/App.js" ]; then
+        check_pass "Mobile app entry point (App.js) exists"
+    else
+        check_fail "Mobile app entry point (App.js) is missing"
+    fi
+
+    if [ -f "app/utils/supabase.js" ]; then
+        check_pass "Supabase client configuration exists"
+    else
+        check_fail "Supabase client configuration is missing"
+    fi
+
+    if [ -f "app/package.json" ]; then
+        check_pass "Mobile app package.json exists"
+    else
+        check_fail "Mobile app package.json is missing"
+    fi
+else
+    check_warn "Mobile app directory is missing"
 fi
 
 # Check 4: Git Configuration
