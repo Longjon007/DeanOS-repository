@@ -1,4 +1,4 @@
-name: DeanOS Health Check
+name: Hyperion AI Health Check
 
 on:
   push:
