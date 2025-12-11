@@ -27,10 +27,10 @@ jobs:
       - name: Make health check script executable
         run: chmod +x health_check.sh
       
-      - name: Run DeanOS Health Check and Generate Report
+      - name: Run Hyperion AI Health Check and Generate Report
         id: health_check
         run: |
-          echo "# DeanOS Health Check Report" > health_report.md
+          echo "# Hyperion AI Health Check Report" > health_report.md
           echo "" >> health_report.md
           echo "**Date:** $(date -u)" >> health_report.md
           echo "" >> health_report.md
