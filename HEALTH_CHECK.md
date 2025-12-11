@@ -48,7 +48,7 @@ chmod +x health_check.sh
 
 ### Health Metrics
 
-The health check calculates an overall system health percentage:
+The health check calculates an overall system health percentage based on 30 comprehensive checks:
 
 - **90-100%**: EXCELLENT - System is fully operational
 - **75-89%**: GOOD - System is functional with minor issues
@@ -57,27 +57,51 @@ The health check calculates an overall system health percentage:
 
 ## Checks Performed
 
+### Repository Structure (4 checks)
 1. ✓ README.md exists and has content
 2. ✓ Documentation directory (docs/) exists
 3. ✓ Git repository is initialized
 4. ✓ .github directory exists
+
+### Documentation (2 checks)
 5. ✓ README mentions DeanOS
-6. ✓ Hyperion prompt interface exists
-7. ✓ HTML has valid DOCTYPE
-8. ✓ HTML has title tag
-9. ✓ Hyperion AI branding present
-10. ✓ Command input element present
-11. ✓ HTML file has substantial content
-12. ✓ Git repository is valid
-13. ✓ Git remote configured
-14. ✓ Current branch information
-15. ✓ Commit history exists
-16. ✓ Health check script is executable
-17. ✓ Git is installed
-18. ✓ Bash is available
-19. ✓ File count validation
-20. ✓ Repository contains files
-21. ✓ Large file detection
+6. ✓ README has meaningful content
+
+### Hyperion AI Interface (11 checks)
+7. ✓ Hyperion prompt interface exists
+8. ✓ HTML has valid DOCTYPE
+9. ✓ HTML has title tag
+10. ✓ Hyperion AI branding present
+11. ✓ Command input element present
+12. ✓ Command processor implemented
+13. ✓ Command history feature present
+14. ✓ HTML file has substantial content
+15. ✓ Landing page (index.html) exists
+16. ✓ Landing page has valid DOCTYPE
+17. ✓ Landing page links to Hyperion interface
+
+### Build & Deployment (4 checks)
+18. ✓ GitHub Pages deployment workflow exists
+19. ✓ Deployment action configured
+20. ✓ Health check workflow exists
+21. ✓ Build documentation (BUILD.md) exists
+
+### Git Configuration (4 checks)
+22. ✓ Git repository is valid
+23. ✓ Git remote configured
+24. ✓ Current branch information
+25. ✓ Commit history exists
+
+### File Permissions (1 check)
+26. ✓ Health check script is executable
+
+### System Dependencies (2 checks)
+27. ✓ Git is installed
+28. ✓ Bash is available
+
+### Repository Health (2 checks)
+29. ✓ File count validation
+30. ✓ Large file detection
 
 ## Interpreting Results
 

@@ -133,6 +133,20 @@ if [ -f "docs/hyperion-prompt.html" ]; then
         check_fail "Command input element missing"
     fi
     
+    # Check for functional command processor
+    if grep -q "processCommand" "docs/hyperion-prompt.html"; then
+        check_pass "Command processor implemented"
+    else
+        check_warn "Command processor not found"
+    fi
+    
+    # Check for command history feature
+    if grep -q "commandHistory" "docs/hyperion-prompt.html"; then
+        check_pass "Command history feature present"
+    else
+        check_warn "Command history not implemented"
+    fi
+    
     # Check file size (should not be empty or too small)
     FILE_SIZE=$(wc -c < "docs/hyperion-prompt.html" 2>/dev/null || echo "0")
     if [ "$FILE_SIZE" -gt 1000 ]; then
@@ -144,7 +158,59 @@ else
     check_fail "Hyperion prompt interface is missing"
 fi
 
-# Check 4: Git Configuration
+# Check for landing page
+if [ -f "docs/index.html" ]; then
+    check_pass "Landing page (index.html) exists"
+    
+    # Validate landing page structure
+    if grep -q "<!DOCTYPE html>" "docs/index.html"; then
+        check_pass "Landing page has valid DOCTYPE"
+    else
+        check_fail "Landing page missing DOCTYPE"
+    fi
+    
+    # Check for link to Hyperion interface
+    if grep -q "hyperion-prompt.html" "docs/index.html"; then
+        check_pass "Landing page links to Hyperion interface"
+    else
+        check_fail "Landing page missing link to Hyperion interface"
+    fi
+else
+    check_fail "Landing page (index.html) is missing"
+fi
+
+# Check 4: Build System
+print_section "Build & Deployment"
+
+# Check for deployment workflow
+if [ -f ".github/workflows/deploy-pages.yml" ]; then
+    check_pass "GitHub Pages deployment workflow exists"
+    
+    # Validate workflow has required jobs
+    if grep -q "deploy-pages" ".github/workflows/deploy-pages.yml"; then
+        check_pass "Deployment action configured"
+    else
+        check_warn "Deployment action may not be properly configured"
+    fi
+else
+    check_fail "GitHub Pages deployment workflow is missing"
+fi
+
+# Check for health check workflow
+if [ -f ".github/workflows/health-check.yml" ]; then
+    check_pass "Health check workflow exists"
+else
+    check_warn "Health check workflow not found"
+fi
+
+# Check for build documentation
+if [ -f "BUILD.md" ]; then
+    check_pass "Build documentation (BUILD.md) exists"
+else
+    check_warn "Build documentation is missing"
+fi
+
+# Check 5: Git Configuration
 print_section "Git Configuration"
 
 if git rev-parse --git-dir > /dev/null 2>&1; then
@@ -173,7 +239,7 @@ else
     check_fail "Git repository is not valid"
 fi
 
-# Check 5: File Permissions
+# Check 6: File Permissions
 print_section "File Permissions"
 
 # Check if script is executable
@@ -183,7 +249,7 @@ else
     check_warn "Health check script should be executable (chmod +x)"
 fi
 
-# Check 6: System Dependencies
+# Check 7: System Dependencies
 print_section "System Dependencies"
 
 # Check for common tools
@@ -200,7 +266,7 @@ else
     check_fail "bash is not available"
 fi
 
-# Check 7: Repository Size and Health
+# Check 8: Repository Size and Health
 print_section "Repository Health"
 
 # Count files
