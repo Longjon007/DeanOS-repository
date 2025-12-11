@@ -288,15 +288,184 @@
     </div>
     
     <script>
-        // Optional: Demo error state toggle
         const input = document.querySelector('.command-input');
+        const container = document.querySelector('.container');
         
-        // You can programmatically add error class like this:
-        // input.classList.add('error');
+        // Command history
+        let commandHistory = [];
+        let historyIndex = -1;
         
-        // Example: Remove error class on input
+        // Response display element (will be created dynamically)
+        let responseBox = null;
+        
+        // Create response box if it doesn't exist
+        function createResponseBox() {
+            if (!responseBox) {
+                responseBox = document.createElement('div');
+                responseBox.style.cssText = `
+                    margin-top: 24px;
+                    padding: 20px;
+                    background: rgba(10, 10, 20, 0.8);
+                    border: 2px solid #8b5cf6;
+                    border-radius: 12px;
+                    text-align: left;
+                    color: #e2e8f0;
+                    font-size: 14px;
+                    line-height: 1.6;
+                    max-height: 400px;
+                    overflow-y: auto;
+                    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+                `;
+                document.querySelector('.prompt-box').appendChild(responseBox);
+            }
+            return responseBox;
+        }
+        
+        // Command processor
+        function processCommand(command) {
+            const cmd = command.trim().toLowerCase();
+            const box = createResponseBox();
+            
+            // Add command to history
+            if (command.trim()) {
+                commandHistory.unshift(command.trim());
+                if (commandHistory.length > 50) commandHistory.pop();
+            }
+            historyIndex = -1;
+            
+            // Command responses
+            const responses = {
+                'help': `
+                    <strong style="color: #ffd700;">Hyperion AI - Available Commands</strong><br><br>
+                    <span style="color: #8b5cf6;">►</span> <strong>help</strong> - Display this help message<br>
+                    <span style="color: #8b5cf6;">►</span> <strong>status</strong> - Check system status<br>
+                    <span style="color: #8b5cf6;">►</span> <strong>about</strong> - Learn about Hyperion AI<br>
+                    <span style="color: #8b5cf6;">►</span> <strong>capabilities</strong> - View AI capabilities<br>
+                    <span style="color: #8b5cf6;">►</span> <strong>history</strong> - Show command history<br>
+                    <span style="color: #8b5cf6;">►</span> <strong>clear</strong> - Clear response display<br>
+                    <span style="color: #8b5cf6;">►</span> <strong>version</strong> - Display version information<br>
+                    <span style="color: #8b5cf6;">►</span> <strong>github</strong> - Open GitHub repository<br>
+                `,
+                'status': `
+                    <strong style="color: #10b981;">⚡ SYSTEM STATUS: OPERATIONAL</strong><br><br>
+                    <span style="color: #06b6d4;">●</span> Core AI: <span style="color: #10b981;">Online</span><br>
+                    <span style="color: #06b6d4;">●</span> Neural Network: <span style="color: #10b981;">Active</span><br>
+                    <span style="color: #06b6d4;">●</span> Processing Units: <span style="color: #10b981;">100% Available</span><br>
+                    <span style="color: #06b6d4;">●</span> Response Time: <span style="color: #10b981;">&lt;50ms</span><br>
+                    <span style="color: #06b6d4;">●</span> System Health: <span style="color: #10b981;">EXCELLENT</span><br>
+                `,
+                'about': `
+                    <strong style="color: #ffd700;">Hyperion AI</strong><br><br>
+                    <em style="color: #d4af37;">Mythic power. Relentless intelligence.</em><br><br>
+                    Hyperion AI is an autonomous, experimentally trained artificial intelligence system
+                    designed to build flawless, wealth-generating applications at lightspeed. 
+                    Powered by advanced neural architectures and relentless optimization algorithms,
+                    Hyperion represents the cutting edge of AI-driven development.<br><br>
+                    <strong style="color: #8b5cf6;">DeanOS</strong> - The foundation for autonomous AI systems.
+                `,
+                'capabilities': `
+                    <strong style="color: #ffd700;">Hyperion AI Capabilities</strong><br><br>
+                    <span style="color: #ec4899;">✦</span> <strong>Rapid Development</strong> - Build applications in record time<br>
+                    <span style="color: #ec4899;">✦</span> <strong>Code Generation</strong> - Create production-ready code<br>
+                    <span style="color: #ec4899;">✦</span> <strong>Optimization</strong> - Maximize performance and efficiency<br>
+                    <span style="color: #ec4899;">✦</span> <strong>Problem Solving</strong> - Tackle complex challenges<br>
+                    <span style="color: #ec4899;">✦</span> <strong>Continuous Learning</strong> - Evolve and improve over time<br>
+                    <span style="color: #ec4899;">✦</span> <strong>Autonomous Operation</strong> - Self-directed task execution<br>
+                `,
+                'history': commandHistory.length > 0 
+                    ? `<strong style="color: #ffd700;">Command History</strong><br><br>${commandHistory.slice(0, 10).map((c, i) => `${i + 1}. ${c}`).join('<br>')}`
+                    : `<strong style="color: #ffd700;">Command History</strong><br><br>No commands in history yet.`,
+                'clear': '',
+                'version': `
+                    <strong style="color: #ffd700;">Hyperion AI</strong><br>
+                    Version: 1.0.0<br>
+                    Build: Production<br>
+                    Release: December 2025<br>
+                    Platform: DeanOS<br>
+                `,
+                'github': `
+                    <strong style="color: #ffd700;">GitHub Repository</strong><br><br>
+                    Opening GitHub repository...<br>
+                    <a href="https://github.com/Longjon007/DeanOS-repository" target="_blank" style="color: #06b6d4; text-decoration: none;">
+                        → https://github.com/Longjon007/DeanOS-repository
+                    </a>
+                `
+            };
+            
+            if (cmd === 'clear') {
+                box.innerHTML = '';
+                box.style.display = 'none';
+                return;
+            }
+            
+            box.style.display = 'block';
+            
+            if (responses[cmd]) {
+                box.innerHTML = responses[cmd];
+                if (cmd === 'github') {
+                    setTimeout(() => {
+                        window.open('https://github.com/Longjon007/DeanOS-repository', '_blank');
+                    }, 500);
+                }
+            } else if (cmd === '') {
+                box.innerHTML = '<span style="color: #fbbf24;">⚠ Please enter a command. Type "help" for available commands.</span>';
+            } else {
+                box.innerHTML = `
+                    <span style="color: #fbbf24;">⚠ Unknown command: "${command}"</span><br><br>
+                    Type <strong style="color: #8b5cf6;">help</strong> to see available commands.
+                `;
+            }
+            
+            // Smooth scroll to response
+            setTimeout(() => {
+                box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+        
+        // Handle Enter key
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const command = this.value;
+                processCommand(command);
+                this.value = '';
+                this.classList.remove('error');
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    this.value = commandHistory[historyIndex];
+                }
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    this.value = commandHistory[historyIndex];
+                } else if (historyIndex === 0) {
+                    historyIndex = -1;
+                    this.value = '';
+                }
+            }
+        });
+        
+        // Remove error class on input
         input.addEventListener('input', function() {
             this.classList.remove('error');
+        });
+        
+        // Display welcome message on load
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const box = createResponseBox();
+                box.innerHTML = `
+                    <strong style="color: #ffd700;">⚡ Welcome to Hyperion AI</strong><br><br>
+                    <span style="color: #cbd5e1;">
+                        Command interface initialized. Type <strong style="color: #8b5cf6;">help</strong> to see available commands,
+                        or enter any command to begin.
+                    </span><br><br>
+                    <em style="color: #64748b; font-size: 12px;">Press Enter to execute commands. Use ↑↓ arrows to navigate history.</em>
+                `;
+                box.style.display = 'block';
+            }, 500);
         });
     </script>
 </body>
