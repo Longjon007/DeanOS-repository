@@ -291,12 +291,27 @@
         const input = document.querySelector('.command-input');
         const container = document.querySelector('.container');
         
+        // Configuration
+        const CONFIG = {
+            githubUrl: 'https://github.com/Longjon007/DeanOS-repository',
+            maxHistorySize: 50
+        };
+        
         // Command history
         let commandHistory = [];
         let historyIndex = -1;
         
         // Response display element (will be created dynamically)
         let responseBox = null;
+        
+        // Helper function to format command history
+        function formatCommandHistory() {
+            if (commandHistory.length === 0) {
+                return '<strong style="color: #ffd700;">Command History</strong><br><br>No commands in history yet.';
+            }
+            const items = commandHistory.slice(0, 10).map((c, i) => `${i + 1}. ${c}`).join('<br>');
+            return `<strong style="color: #ffd700;">Command History</strong><br><br>${items}`;
+        }
         
         // Create response box if it doesn't exist
         function createResponseBox() {
@@ -329,7 +344,7 @@
             // Add command to history
             if (command.trim()) {
                 commandHistory.unshift(command.trim());
-                if (commandHistory.length > 50) commandHistory.pop();
+                if (commandHistory.length > CONFIG.maxHistorySize) commandHistory.pop();
             }
             historyIndex = -1;
             
@@ -372,9 +387,7 @@
                     <span style="color: #ec4899;">✦</span> <strong>Continuous Learning</strong> - Evolve and improve over time<br>
                     <span style="color: #ec4899;">✦</span> <strong>Autonomous Operation</strong> - Self-directed task execution<br>
                 `,
-                'history': commandHistory.length > 0 
-                    ? `<strong style="color: #ffd700;">Command History</strong><br><br>${commandHistory.slice(0, 10).map((c, i) => `${i + 1}. ${c}`).join('<br>')}`
-                    : `<strong style="color: #ffd700;">Command History</strong><br><br>No commands in history yet.`,
+                'history': formatCommandHistory(),
                 'clear': '',
                 'version': `
                     <strong style="color: #ffd700;">Hyperion AI</strong><br>
@@ -386,8 +399,8 @@
                 'github': `
                     <strong style="color: #ffd700;">GitHub Repository</strong><br><br>
                     Opening GitHub repository...<br>
-                    <a href="https://github.com/Longjon007/DeanOS-repository" target="_blank" style="color: #06b6d4; text-decoration: none;">
-                        → https://github.com/Longjon007/DeanOS-repository
+                    <a href="${CONFIG.githubUrl}" target="_blank" style="color: #06b6d4; text-decoration: none;">
+                        → ${CONFIG.githubUrl}
                     </a>
                 `
             };
@@ -404,7 +417,7 @@
                 box.innerHTML = responses[cmd];
                 if (cmd === 'github') {
                     setTimeout(() => {
-                        window.open('https://github.com/Longjon007/DeanOS-repository', '_blank');
+                        window.open(CONFIG.githubUrl, '_blank');
                     }, 500);
                 }
             } else if (cmd === '') {
