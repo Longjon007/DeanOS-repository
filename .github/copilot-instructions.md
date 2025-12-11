@@ -11,7 +11,7 @@ DeanOS is an autonomous experimentally trained AI system. This repository contai
 - Include shebang `#!/bin/bash` at the top of all scripts
 - Add descriptive comments explaining script purpose and complex logic
 - Use meaningful variable names in UPPER_CASE for constants and lower_case for variables
-- Disable exit-on-error when performing comprehensive checks: `set +e`
+- For comprehensive health checks, use `set +e` around specific check blocks to capture and handle errors manually, then re-enable with `set -e`
 - Always make scripts executable with proper permissions (chmod +x)
 
 ### Output and Formatting
@@ -23,7 +23,7 @@ DeanOS is an autonomous experimentally trained AI system. This repository contai
 ## Documentation
 
 ### README Files
-- Always mention "DeanOS" in repository README
+- Clearly identify the project as part of the DeanOS ecosystem in the repository README
 - Include clear project overview and purpose
 - Provide usage instructions and examples
 - Document all available commands and options
