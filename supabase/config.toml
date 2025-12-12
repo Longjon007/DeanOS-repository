@@ -1,0 +1,89 @@
+# Supabase Configuration for DeanOS
+# This file manages database migrations and branch-specific configurations
+
+[project]
+# Project reference ID
+project_id = "pitmtcljvkwcquqoepgz"
+
+[api]
+# Enable database webhooks
+enabled = true
+# API port for local development
+port = 54321
+# API schemas to expose
+schemas = ["public", "storage", "graphql_public"]
+# Extra schemas to add to search_path
+extra_search_path = ["public", "extensions"]
+# Maximum number of rows returned from a view, table, or stored procedure
+max_rows = 1000
+
+[db]
+# Database port for local development
+port = 54322
+# Major version of PostgreSQL
+major_version = 15
+
+[db.pooler]
+enabled = false
+port = 54329
+pool_mode = "transaction"
+default_pool_size = 20
+max_client_conn = 100
+
+[realtime]
+enabled = true
+port = 54323
+
+[studio]
+enabled = true
+port = 54324
+
+[inbucket]
+enabled = true
+port = 54325
+
+[storage]
+enabled = true
+port = 54326
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+port = 54327
+# Time before expired tokens are cleaned up
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://localhost:3000"]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = false
+
+# Branch-specific configurations
+# These settings ensure migrations are applied consistently across branches
+
+[db.migrations]
+# Path to migration files
+path = "supabase/migrations"
+
+# Branch configuration for main/production
+[environments.production]
+project_ref = "pitmtcljvkwcquqoepgz"
+# Apply migrations automatically on deployment
+auto_migrate = true
+
+# Branch configuration for staging/development
+# IMPORTANT: For production use, create a separate Supabase project for staging
+# to prevent accidental data exposure or production corruption
+[environments.staging]
+# TODO: Replace with dedicated staging project_ref for production deployment
+# Example: project_ref = "your-staging-project-ref"
+project_ref = "pitmtcljvkwcquqoepgz"
+auto_migrate = true
+
+# Local development configuration
+[environments.local]
+# Local development uses Supabase CLI to manage migrations
+auto_migrate = true
