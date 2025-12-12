@@ -1,0 +1,74 @@
+name: Validate Database Migrations
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'supabase/migrations/**'
+      - 'web/prisma/schema.prisma'
+      - 'supabase/config.toml'
+      - 'scripts/validate_migrations.sh'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'supabase/migrations/**'
+      - 'web/prisma/schema.prisma'
+      - 'supabase/config.toml'
+      - 'scripts/validate_migrations.sh'
+  workflow_dispatch:
+    # Allow manual trigger
+
+jobs:
+  validate-migrations:
+    name: Validate Migration Synchronization
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Make validation script executable
+        run: chmod +x scripts/validate_migrations.sh
+      
+      - name: Run Database Migration Validation
+        id: migration_validation
+        run: |
+          echo "# Database Migration Validation Report" > migration_report.md
+          echo "" >> migration_report.md
+          echo "**Date:** $(date -u)" >> migration_report.md
+          echo "**Branch:** ${{ github.ref_name }}" >> migration_report.md
+          echo "" >> migration_report.md
+          echo "## Validation Results" >> migration_report.md
+          echo "" >> migration_report.md
+          echo '```' >> migration_report.md
+          ./scripts/validate_migrations.sh 2>&1 | tee -a migration_report.md
+          VALIDATION_EXIT_CODE=${PIPESTATUS[0]}
+          echo '```' >> migration_report.md
+          cat migration_report.md
+          exit $VALIDATION_EXIT_CODE
+      
+      - name: Comment on PR (if applicable)
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.existsSync('migration_report.md') ? fs.readFileSync('migration_report.md', 'utf8') : 'Migration validation report not found';
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: report
+            });
+      
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: migration-validation-report
+          path: migration_report.md
+          retention-days: 30
