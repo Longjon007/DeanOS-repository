@@ -15,6 +15,7 @@ export default async function Page() {
 
   const { data: todos } = await supabase.from<Todo>('todos').select()
 
+  // Prefer concise labels over JSON stringification while supporting varied todo schemas.
   const getLabel = (todo: Todo) =>
     todo.title ??
     todo.task ??
