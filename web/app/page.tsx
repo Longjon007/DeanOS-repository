@@ -25,7 +25,7 @@ export default async function Page() {
   return (
     <ul>
       {todos?.map((todo) => (
-        <li key={String(todo.id)}>{getLabel(todo)}</li>
+        <li key={todo.id}>{getLabel(todo)}</li>
       ))}
     </ul>
   )
