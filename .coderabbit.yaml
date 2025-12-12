@@ -1,0 +1,271 @@
+# CodeRabbit Configuration for DeanOS Repository
+# This configuration enables comprehensive AI-powered code review before deployment
+
+# Language settings
+language: en-US
+
+# Review settings
+reviews:
+  # Enable automatic reviews on pull requests
+  auto_review:
+    enabled: true
+    # Trigger review on draft PRs
+    drafts: false
+    # Wait for base branch tests to pass before reviewing
+    base_branches_to_review:
+      - main
+      - master
+  
+  # Review depth and scope
+  level: comprehensive
+  
+  # Auto-approve minor changes
+  auto_approve:
+    enabled: false
+  
+  # Review comments
+  review_comments:
+    # Add line-by-line comments
+    enabled: true
+    # Comment on issues, not just suggestions
+    include_issues: true
+    # Include code suggestions
+    include_suggestions: true
+
+# Code quality checks
+quality:
+  # Enable security checks
+  security:
+    enabled: true
+    # Check for common vulnerabilities
+    check_vulnerabilities: true
+    # Check for secrets in code
+    check_secrets: true
+    # Check for security best practices
+    check_best_practices: true
+  
+  # Enable performance checks
+  performance:
+    enabled: true
+    # Check for performance anti-patterns
+    check_antipatterns: true
+  
+  # Enable maintainability checks
+  maintainability:
+    enabled: true
+    # Check code complexity
+    check_complexity: true
+    # Check code duplication
+    check_duplication: true
+    # Check code smells
+    check_code_smells: true
+  
+  # Enable testing checks
+  testing:
+    enabled: true
+    # Ensure tests are included with changes
+    require_tests: false
+    # Check test coverage
+    check_coverage: true
+
+# Language-specific configurations
+languages:
+  javascript:
+    # Enable JavaScript/TypeScript specific checks
+    enabled: true
+    # Check for modern JavaScript patterns
+    check_modern_patterns: true
+    # Check async/await usage
+    check_async_patterns: true
+    # Check for proper error handling
+    check_error_handling: true
+  
+  typescript:
+    enabled: true
+    # Check TypeScript-specific patterns
+    check_type_safety: true
+    # Check for proper interface usage
+    check_interfaces: true
+  
+  python:
+    enabled: false
+  
+  yaml:
+    enabled: true
+    # Check YAML syntax and structure
+    check_syntax: true
+
+# Documentation checks
+documentation:
+  # Require documentation for new code
+  enabled: true
+  # Check for missing function documentation
+  check_functions: true
+  # Check for missing class documentation
+  check_classes: true
+  # Check README updates
+  check_readme: true
+  # Require inline comments for complex logic
+  require_comments_for_complexity: true
+
+# File-specific rules
+paths:
+  # Include all files by default
+  include:
+    - "**/*"
+  
+  # Exclude specific paths from review
+  exclude:
+    - "node_modules/**"
+    - "dist/**"
+    - "build/**"
+    - ".git/**"
+    - "*.min.js"
+    - "*.bundle.js"
+    - "package-lock.json"
+    - "yarn.lock"
+    - "pnpm-lock.yaml"
+
+# Review priorities
+priorities:
+  # High priority items
+  high:
+    - security_vulnerabilities
+    - breaking_changes
+    - performance_regressions
+    - memory_leaks
+  
+  # Medium priority items
+  medium:
+    - code_smells
+    - complexity_issues
+    - missing_documentation
+    - test_coverage
+  
+  # Low priority items
+  low:
+    - style_issues
+    - naming_conventions
+    - code_formatting
+
+# AI behavior settings
+ai:
+  # Enable AI-powered suggestions
+  suggestions:
+    enabled: true
+    # Provide code examples in suggestions
+    include_examples: true
+    # Provide alternative implementations
+    include_alternatives: true
+  
+  # Learning mode - adapt to project patterns
+  learning:
+    enabled: true
+    # Learn from accepted suggestions
+    learn_from_feedback: true
+  
+  # Context awareness
+  context:
+    # Consider entire PR context
+    full_pr_context: true
+    # Consider related files
+    include_related_files: true
+    # Consider git history
+    include_git_history: true
+
+# Notification settings
+notifications:
+  # Notify on completion
+  on_completion:
+    enabled: true
+  
+  # Notify on critical issues
+  on_critical_issues:
+    enabled: true
+  
+  # Summary in PR description
+  summary_in_description:
+    enabled: true
+
+# Pre-deploy specific checks
+pre_deploy:
+  # Mandatory checks before deployment
+  mandatory_checks:
+    - no_security_vulnerabilities
+    - no_breaking_changes
+    - tests_passing
+    - no_console_logs_in_production
+    - no_debug_statements
+  
+  # Block deployment on critical issues
+  block_on_critical:
+    enabled: true
+  
+  # Require approval after review
+  require_approval:
+    enabled: false
+
+# Custom rules for DeanOS
+custom_rules:
+  # Ensure proper error handling in async code
+  - name: async_error_handling
+    pattern: "async function.*{(?!.*try).*await"
+    message: "Async functions should include try-catch blocks for error handling"
+    severity: warning
+  
+  # Check for console.log in production code
+  - name: no_console_logs
+    pattern: "console\\.log\\("
+    message: "Remove console.log statements before deployment"
+    severity: error
+    exclude:
+      - "**/*.test.js"
+      - "**/*.spec.js"
+      - "**/test/**"
+  
+  # Ensure Hyperion AI branding consistency
+  - name: hyperion_branding
+    pattern: "Hyperion AI"
+    message: "Verify Hyperion AI branding is consistent"
+    severity: info
+
+# Integration settings
+integrations:
+  # GitHub Actions integration
+  github_actions:
+    enabled: true
+    # Run on specific events
+    events:
+      - pull_request
+      - push
+  
+  # Status checks
+  status_checks:
+    enabled: true
+    # Report status to GitHub
+    report_to_github: true
+
+# Performance settings
+performance:
+  # Timeout for review (in minutes)
+  timeout: 10
+  
+  # Maximum files to review in single PR
+  max_files: 100
+  
+  # Maximum lines to review
+  max_lines: 10000
+
+# Feedback settings
+feedback:
+  # Tone of feedback
+  tone: constructive
+  
+  # Detail level
+  detail_level: detailed
+  
+  # Include learning resources
+  include_resources: true
+  
+  # Format of feedback
+  format: markdown
