@@ -9,13 +9,7 @@ type RawTodo = {
   description?: string
 }
 
-type Todo = {
-  id: string
-  title?: string
-  task?: string
-  name?: string
-  description?: string
-}
+type Todo = Omit<RawTodo, 'id'> & { id: string }
 
 export default async function Page() {
   const cookieStore = await cookies()
@@ -28,6 +22,7 @@ export default async function Page() {
   })) ?? []
 
   // Prefer concise labels over JSON stringification while supporting varied todo schemas.
+  // Priority order: title → task → name → description → id fallback.
   const getLabel = (todo: Todo) =>
     todo.title ??
     todo.task ??
