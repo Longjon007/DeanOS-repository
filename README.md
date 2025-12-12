@@ -1,2 +1,2 @@
-# Hyperion AI
+# Hyperien AI
 Autonomous experimentally trained AI
