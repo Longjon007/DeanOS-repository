@@ -334,7 +334,10 @@
     
     <script>
         // ElevenLabs API Configuration
-        const ELEVENLABS_API_KEY = 'YOUR_API_KEY_HERE'; // Replace with your actual API key
+        // SECURITY NOTE: For production use, move API calls to a backend proxy
+        // to avoid exposing your API key in client-side code
+        const API_KEY_PLACEHOLDER = 'YOUR_API_KEY_HERE';
+        const ELEVENLABS_API_KEY = API_KEY_PLACEHOLDER; // Replace with your actual API key
         const ELEVENLABS_VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; // Default voice (Rachel)
         const ELEVENLABS_API_URL = `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`;
         
@@ -363,7 +366,7 @@
                 return;
             }
             
-            if (!ELEVENLABS_API_KEY || ELEVENLABS_API_KEY === 'YOUR_API_KEY_HERE') {
+            if (!ELEVENLABS_API_KEY || ELEVENLABS_API_KEY === API_KEY_PLACEHOLDER) {
                 console.error('ElevenLabs API key not configured');
                 input.classList.add('error');
                 updateStatus('⚠️ ElevenLabs API key not configured');

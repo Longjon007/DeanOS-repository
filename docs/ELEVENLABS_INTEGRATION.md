@@ -13,6 +13,21 @@ Hyperion AI now features text-to-speech capabilities powered by ElevenLabs API. 
 
 ## Setup Instructions
 
+### ⚠️ Security Warning
+
+**IMPORTANT**: The current implementation stores the API key in client-side JavaScript, which means it will be visible to anyone who views the page source. This is suitable for:
+- Local development and testing
+- Personal use on localhost
+- Demonstrations and prototypes
+
+**For production environments**, you should:
+1. Move API calls to a backend server
+2. Use environment variables on the server
+3. Implement proper API key rotation
+4. Add rate limiting and usage monitoring
+
+See the [Security Best Practices](#security-best-practices) section for more details.
+
 ### 1. Get Your ElevenLabs API Key
 
 1. Visit [ElevenLabs](https://elevenlabs.io/)
