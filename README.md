@@ -1,9 +1,9 @@
-# Hyperien AI
+# Hyperion AI
 Autonomous experimentally trained AI
 
 ## Overview
 
-DeanOS (Hyperien AI) is an autonomous AI system with comprehensive health monitoring, automated code review, and deployment workflows.
+DeanOS (Hyperion AI) is an autonomous AI system with comprehensive health monitoring, automated code review, and deployment workflows.
 
 ## Project Structure
 

@@ -51,23 +51,8 @@ jobs:
             echo "✓ app.json found"
             cat app.json
           else
-            echo "⚠ app.json not found - creating basic configuration"
-            echo '{
-              "expo": {
-                "name": "Hyperion AI Mobile",
-                "slug": "hyperion-ai-mobile",
-                "version": "1.0.0",
-                "orientation": "portrait",
-                "icon": "./assets/icon.png",
-                "userInterfaceStyle": "light",
-                "splash": {
-                  "image": "./assets/splash.png",
-                  "resizeMode": "contain",
-                  "backgroundColor": "#ffffff"
-                },
-                "platforms": ["ios", "android", "web"]
-              }
-            }' > app.json
+            echo "⚠ app.json not found - this is informational only"
+            echo "Note: app.json will be needed for production builds"
           fi
       
       - name: Check Expo installation
