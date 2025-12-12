@@ -105,37 +105,37 @@ fi
 print_section "Hyperien AI Interface & Mobile App"
 
 # Check Web Interface
-if [ -f "docs/hyperion-prompt.html" ]; then
+if [ -f "docs/hyperien-prompt.html" ]; then
     check_pass "Hyperien prompt interface exists"
     
     # Validate HTML structure
-    if grep -q "<!DOCTYPE html>" "docs/hyperion-prompt.html"; then
+    if grep -q "<!DOCTYPE html>" "docs/hyperien-prompt.html"; then
         check_pass "HTML has valid DOCTYPE"
     else
         check_fail "HTML missing DOCTYPE declaration"
     fi
     
-    if grep -q "<title>" "docs/hyperion-prompt.html"; then
+    if grep -q "<title>" "docs/hyperien-prompt.html"; then
         check_pass "HTML has title tag"
     else
         check_fail "HTML missing title tag"
     fi
     
-    if grep -q "Hyperien AI" "docs/hyperion-prompt.html"; then
+    if grep -q "Hyperien AI" "docs/hyperien-prompt.html"; then
         check_pass "Hyperien AI branding present"
     else
         check_fail "Hyperien AI branding missing"
     fi
     
     # Check for essential elements
-    if grep -q "command-input" "docs/hyperion-prompt.html"; then
+    if grep -q "command-input" "docs/hyperien-prompt.html"; then
         check_pass "Command input element present"
     else
         check_fail "Command input element missing"
     fi
     
     # Check file size (should not be empty or too small)
-    FILE_SIZE=$(wc -c < "docs/hyperion-prompt.html" 2>/dev/null || echo "0")
+    FILE_SIZE=$(wc -c < "docs/hyperien-prompt.html" 2>/dev/null || echo "0")
     if [ "$FILE_SIZE" -gt 1000 ]; then
         check_pass "HTML file has substantial content (${FILE_SIZE} bytes)"
     else
