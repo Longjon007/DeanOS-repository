@@ -28,6 +28,7 @@ GitHub Actions workflow (`.github/workflows/health-check.yml`) that:
 - Can be triggered manually via workflow dispatch
 - Generates health reports
 - Comments on pull requests with results
+- Runs backend lint/tests (Deno) and frontend lint/build steps before uploading a deployable artifact
 
 ## Usage
 

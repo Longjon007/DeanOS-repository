@@ -1,1 +1,10 @@
 .env
+
+# Node/Next build artifacts
+node_modules/
+**/node_modules/
+.next/
+web/.next/
+
+# Generated reports
+health_report.md

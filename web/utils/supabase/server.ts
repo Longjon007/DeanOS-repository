@@ -10,16 +10,23 @@ export const createClient = (cookieStore: ReturnType<typeof cookies>) => {
     supabaseKey!,
     {
       cookies: {
-        getAll() {
-          return cookieStore.getAll()
+        get(name: string) {
+          return cookieStore.get(name)?.value
         },
-        setAll(cookiesToSet) {
+        set(name: string, value: string, options: CookieOptions) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
+            cookieStore.set({ name, value, ...options })
           } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
+            // The `set` method was called from a Server Component where mutation is not supported.
+            // This can be ignored if you have middleware refreshing user sessions.
+          }
+        },
+        remove(name: string, options: CookieOptions) {
+          try {
+            cookieStore.set({ name, value: '', ...options, maxAge: 0 })
+          } catch {
+            // The `remove` method was called from a Server Component where mutation is not supported.
+            // This can be ignored if you have middleware refreshing user sessions.
           }
         },
       },
