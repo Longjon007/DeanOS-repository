@@ -12,7 +12,7 @@ A comprehensive bash script that validates:
 
 - **Repository Structure**: Verifies essential files and directories exist
 - **Documentation**: Checks README and documentation content
-- **Hyperion AI Interface**: Validates the HTML prompt interface
+- **Hyperion AI Interface**: Validates the HTML prompt interface (`docs/hyperion-prompt.html`)
 - **Git Configuration**: Verifies repository setup and remote configuration
 - **File Permissions**: Ensures scripts are properly configured
 - **System Dependencies**: Checks for required tools (git, bash)
