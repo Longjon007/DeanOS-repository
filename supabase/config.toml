@@ -75,8 +75,11 @@ project_ref = "pitmtcljvkwcquqoepgz"
 auto_migrate = true
 
 # Branch configuration for staging/development
+# IMPORTANT: For production use, create a separate Supabase project for staging
+# to prevent accidental data exposure or production corruption
 [environments.staging]
-# Use same project for staging, but with different schema/namespace if needed
+# TODO: Replace with dedicated staging project_ref for production deployment
+# Example: project_ref = "your-staging-project-ref"
 project_ref = "pitmtcljvkwcquqoepgz"
 auto_migrate = true
 

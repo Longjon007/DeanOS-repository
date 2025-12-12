@@ -9,6 +9,7 @@ datasource db {
 }
 
 // Subscriptions table - synced with Supabase migration 20240522000000_create_subscriptions.sql
+// Note: userId references auth.users(id) in Supabase (enforced at database level)
 model Subscription {
   id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId           String    @map("user_id") @db.Uuid

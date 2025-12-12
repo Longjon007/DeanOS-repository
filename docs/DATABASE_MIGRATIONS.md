@@ -39,7 +39,9 @@ Prisma schema provides type-safe database access for the Next.js web application
 - RLS: Enabled for all tables
 
 ### Development/Staging
-- Uses same Supabase project
+- **IMPORTANT**: For production deployments, create a separate Supabase project for staging
+- Currently uses same Supabase project (suitable for small projects/testing)
+- For enterprise use: Create dedicated staging project to prevent data exposure
 - Environment variables configured in `.env.local`
 - Local Supabase CLI for development
 
@@ -173,13 +175,18 @@ Remember to:
 
 ## Health Checks
 
-The health check system validates:
+The migration validation system checks:
 - Migration files exist
 - Prisma schema is valid
 - Database connectivity
 - Schema synchronization
 
-Run health check:
+Run migration validation:
+```bash
+./scripts/validate_migrations.sh
+```
+
+For general system health:
 ```bash
 ./health_check.sh
 ```
