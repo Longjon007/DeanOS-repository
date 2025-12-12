@@ -123,7 +123,7 @@ jobs:
           # Check for hardcoded credentials (basic check)
           echo ""
           echo "→ Checking for potential hardcoded credentials..."
-          CREDS=$(grep -r "password\s*=\s*['\"][^'\"]*['\"]|api[_-]?key\s*=\s*['\"][^'\"]*['\"]|secret\s*=\s*['\"][^'\"]*['\"]" \
+          CREDS=$(grep -rE "password\s*=\s*['\"][^'\"]+['\"]|api[_-]?key\s*=\s*['\"][^'\"]+['\"]|secret\s*=\s*['\"][^'\"]+['\"]" \
             --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" --include="*.json" \
             --exclude-dir="node_modules" --exclude-dir=".git" --exclude="package-lock.json" \
             . 2>/dev/null || echo "")

@@ -209,7 +209,7 @@ pre_deploy:
 custom_rules:
   # Ensure proper error handling in async code
   - name: async_error_handling
-    pattern: "async function.*{(?!.*try).*await"
+    pattern: "async\\s+function\\s+\\w+\\s*\\([^)]*\\)\\s*\\{[^}]*await[^}]*\\}"
     message: "Async functions should include try-catch blocks for error handling"
     severity: warning
   
