@@ -4,7 +4,6 @@ import { cookies } from 'next/headers'
 type TodoRecord = {
   id?: string | number
   title?: string
-  name?: string
   description?: string
 }
 
@@ -27,8 +26,8 @@ export default async function Page() {
   const cookieStore = await cookies()
   const supabase = createClient(cookieStore)
 
-  const { data: todos } = await supabase.from<TodoRecord>('todos').select()
-  const todoItems = todos ?? []
+  const { data: todos } = await supabase.from('todos').select()
+  const todoItems = (todos ?? []) as TodoRecord[]
 
   return (
     <main
@@ -81,7 +80,7 @@ export default async function Page() {
           <ul style={{ display: 'grid', gap: 8, padding: 0, listStyle: 'none' }}>
             {todoItems.map((todo, index) => (
               <li
-                key={todo.id ?? `${todo.title ?? todo.name ?? 'todo'}-${index}`}
+                key={todo.id ?? index}
                 style={{
                   border: '1px solid #e5e7eb',
                   borderRadius: 10,
@@ -89,7 +88,7 @@ export default async function Page() {
                   background: '#f9fafb'
                 }}
               >
-                {todo.title ?? todo.name ?? todo.description ?? JSON.stringify(todo)}
+                {todo.title ?? todo.description ?? JSON.stringify(todo)}
               </li>
             ))}
           </ul>
