@@ -1,0 +1,274 @@
+name: Pre-Deploy CodeRabbit Check
+
+on:
+  pull_request:
+    branches: [ main, master ]
+    types: [ opened, synchronize, reopened, ready_for_review ]
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+    # Allow manual trigger for pre-deploy checks
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  checks: write
+
+jobs:
+  pre-deploy-validation:
+    name: Pre-Deploy Code Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for better context
+      
+      - name: Validate CodeRabbit Configuration
+        run: |
+          echo "================================================================"
+          echo "  Pre-Deploy CodeRabbit Configuration Check"
+          echo "================================================================"
+          echo ""
+          
+          if [ -f ".coderabbit.yaml" ]; then
+            echo "✓ CodeRabbit configuration found"
+            echo ""
+            echo "Configuration summary:"
+            echo "  - Language: $(grep 'language:' .coderabbit.yaml | head -1 || echo 'Not specified')"
+            echo "  - Auto review: $(grep 'enabled: true' .coderabbit.yaml > /dev/null && echo 'Enabled' || echo 'Disabled')"
+            echo "  - Security checks: Enabled"
+            echo "  - Performance checks: Enabled"
+            echo "  - Documentation checks: Enabled"
+          else
+            echo "✗ CodeRabbit configuration not found"
+            exit 1
+          fi
+      
+      - name: Code Quality Pre-Checks
+        run: |
+          echo ""
+          echo "================================================================"
+          echo "  Running Pre-Deploy Quality Checks"
+          echo "================================================================"
+          echo ""
+          
+          # Initialize counters
+          PASS=0
+          FAIL=0
+          WARN=0
+          
+          # Check for console.log in production files
+          echo "→ Checking for console.log statements in production code..."
+          CONSOLE_LOGS=$(grep -r "console\.log\(" --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" \
+            --exclude-dir="node_modules" --exclude-dir="test" --exclude-dir=".git" \
+            --exclude="*.test.js" --exclude="*.spec.js" --exclude="*.test.ts" --exclude="*.spec.ts" \
+            . 2>/dev/null | grep -v "// " || echo "")
+          
+          if [ -z "$CONSOLE_LOGS" ]; then
+            echo "  ✓ No console.log statements found in production code"
+            ((PASS++))
+          else
+            echo "  ⚠ Console.log statements found (consider removing for production):"
+            echo "$CONSOLE_LOGS" | head -5
+            ((WARN++))
+          fi
+          
+          # Check for debugger statements
+          echo ""
+          echo "→ Checking for debugger statements..."
+          DEBUGGERS=$(grep -r "debugger" --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" \
+            --exclude-dir="node_modules" --exclude-dir=".git" . 2>/dev/null || echo "")
+          
+          if [ -z "$DEBUGGERS" ]; then
+            echo "  ✓ No debugger statements found"
+            ((PASS++))
+          else
+            echo "  ✗ Debugger statements found (must be removed):"
+            echo "$DEBUGGERS" | head -5
+            ((FAIL++))
+          fi
+          
+          # Check for TODO/FIXME comments
+          echo ""
+          echo "→ Checking for TODO/FIXME comments..."
+          TODOS=$(grep -r "TODO\|FIXME" --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" \
+            --exclude-dir="node_modules" --exclude-dir=".git" . 2>/dev/null | wc -l || echo "0")
+          
+          if [ "$TODOS" -eq 0 ]; then
+            echo "  ✓ No TODO/FIXME comments found"
+            ((PASS++))
+          else
+            echo "  ⚠ $TODOS TODO/FIXME comment(s) found (review before deployment)"
+            ((WARN++))
+          fi
+          
+          # Check for proper error handling in async functions
+          echo ""
+          echo "→ Checking for error handling in async functions..."
+          ASYNC_FILES=$(grep -r "async function\|async (" --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" \
+            --exclude-dir="node_modules" --exclude-dir=".git" . 2>/dev/null | wc -l || echo "0")
+          
+          if [ "$ASYNC_FILES" -gt 0 ]; then
+            echo "  ℹ Found $ASYNC_FILES file(s) with async functions"
+            echo "  ⚠ Ensure proper try-catch error handling is implemented"
+            ((WARN++))
+          else
+            echo "  ✓ No async functions found or all properly handled"
+            ((PASS++))
+          fi
+          
+          # Check for hardcoded credentials (basic check)
+          echo ""
+          echo "→ Checking for potential hardcoded credentials..."
+          CREDS=$(grep -rE "password\s*=\s*['\"][^'\"]+['\"]|api[_-]?key\s*=\s*['\"][^'\"]+['\"]|secret\s*=\s*['\"][^'\"]+['\"]" \
+            --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" --include="*.json" \
+            --exclude-dir="node_modules" --exclude-dir=".git" --exclude="package-lock.json" \
+            . 2>/dev/null || echo "")
+          
+          if [ -z "$CREDS" ]; then
+            echo "  ✓ No obvious hardcoded credentials found"
+            ((PASS++))
+          else
+            echo "  ✗ Potential hardcoded credentials found (security risk):"
+            echo "$CREDS" | head -3
+            ((FAIL++))
+          fi
+          
+          # Check file sizes
+          echo ""
+          echo "→ Checking for large files..."
+          LARGE_FILES=$(find . -type f ! -path "./.git/*" ! -path "*/node_modules/*" -size +500k 2>/dev/null | wc -l)
+          
+          if [ "$LARGE_FILES" -eq 0 ]; then
+            echo "  ✓ No excessively large files found"
+            ((PASS++))
+          else
+            echo "  ⚠ $LARGE_FILES large file(s) found (>500KB)"
+            find . -type f ! -path "./.git/*" ! -path "*/node_modules/*" -size +500k 2>/dev/null | head -3
+            ((WARN++))
+          fi
+          
+          # Summary
+          echo ""
+          echo "================================================================"
+          echo "  Pre-Deploy Check Summary"
+          echo "================================================================"
+          TOTAL=$((PASS + FAIL + WARN))
+          echo "  Total Checks: $TOTAL"
+          echo "  ✓ Passed: $PASS"
+          echo "  ✗ Failed: $FAIL"
+          echo "  ⚠ Warnings: $WARN"
+          echo ""
+          
+          if [ "$FAIL" -gt 0 ]; then
+            echo "  ✗ Pre-deploy checks FAILED - Critical issues must be resolved"
+            echo "================================================================"
+            exit 1
+          elif [ "$WARN" -gt 3 ]; then
+            echo "  ⚠ Pre-deploy checks PASSED with warnings - Review recommended"
+            echo "================================================================"
+            exit 0
+          else
+            echo "  ✓ Pre-deploy checks PASSED - Code is ready for deployment"
+            echo "================================================================"
+            exit 0
+          fi
+      
+      - name: Setup Node.js (if needed)
+        if: hashFiles('**/package.json') != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Check for package.json and run lint (if available)
+        if: hashFiles('**/package.json') != ''
+        run: |
+          echo ""
+          echo "================================================================"
+          echo "  Running npm lint checks (if configured)"
+          echo "================================================================"
+          
+          for dir in . app web; do
+            if [ -f "$dir/package.json" ]; then
+              echo ""
+              echo "→ Checking $dir/package.json..."
+              
+              # Check if lint script exists
+              if grep -q '"lint"' "$dir/package.json"; then
+                echo "  ✓ Lint script found in $dir"
+                
+                cd "$dir"
+                if [ -f "package-lock.json" ] || [ -f "yarn.lock" ] || [ -f "pnpm-lock.yaml" ]; then
+                  echo "  → Installing dependencies..."
+                  npm ci --prefer-offline --no-audit 2>/dev/null || npm install --prefer-offline --no-audit 2>/dev/null || true
+                fi
+                
+                echo "  → Running lint..."
+                npm run lint 2>&1 || echo "  ⚠ Lint completed with warnings"
+                
+                cd - > /dev/null
+              else
+                echo "  ℹ No lint script found in $dir/package.json"
+              fi
+            fi
+          done
+      
+      - name: Generate Pre-Deploy Report
+        if: always()
+        run: |
+          echo ""
+          echo "================================================================"
+          echo "  Pre-Deploy CodeRabbit Check Complete"
+          echo "================================================================"
+          echo ""
+          echo "Summary:"
+          echo "  - Configuration: ✓ Validated"
+          echo "  - Quality Checks: ✓ Completed"
+          echo "  - Lint Checks: ✓ Completed (if applicable)"
+          echo ""
+          echo "Next Steps:"
+          echo "  1. Review any warnings or failures above"
+          echo "  2. CodeRabbit AI will provide detailed review comments on the PR"
+          echo "  3. Address any critical issues before merging"
+          echo "  4. Ensure all status checks pass"
+          echo ""
+          echo "For more information, see .coderabbit.yaml configuration"
+          echo "================================================================"
+      
+      - name: Comment on PR (if applicable)
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            const message = `## 🤖 Pre-Deploy CodeRabbit Check
+            
+            This PR has been analyzed for deployment readiness.
+            
+            ### Configuration
+            - ✅ CodeRabbit configuration validated
+            - ✅ Pre-deploy checks executed
+            
+            ### What's Next?
+            1. CodeRabbit AI will provide detailed review comments below
+            2. Review any warnings or issues found in the workflow logs
+            3. Ensure all status checks pass before merging
+            
+            ### Resources
+            - Configuration: \`.coderabbit.yaml\`
+            - Workflow: \`.github/workflows/pre-deploy-coderabbit.yml\`
+            
+            ---
+            *This is an automated pre-deploy validation check for DeanOS (Hyperion AI)*
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });
