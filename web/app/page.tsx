@@ -10,7 +10,7 @@ type Todo = {
 }
 
 export default async function Page() {
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
   const supabase = createClient(cookieStore)
 
   const { data: todos } = await supabase.from<Todo>('todos').select()
@@ -25,7 +25,7 @@ export default async function Page() {
   return (
     <ul>
       {todos?.map((todo) => (
-        <li key={todo.id}>{getLabel(todo)}</li>
+        <li key={String(todo.id)}>{getLabel(todo)}</li>
       ))}
     </ul>
   )
