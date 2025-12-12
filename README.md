@@ -1,2 +1,2 @@
-# Hyperion AI
-Autonomous experimentally trained AI
+# Vitalis_OS
+Autonomous experimentally trained operating system
