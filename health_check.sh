@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Hyperion AI Health Check Script
-# This script performs a comprehensive health check on the Hyperion AI system
+# Hyperien AI Health Check Script
+# This script performs a comprehensive health check on the Hyperien AI system
 
 # Don't exit on errors, we want to run all checks
 set +e
@@ -22,7 +22,7 @@ WARN_COUNT=0
 print_header() {
     echo ""
     echo "================================================================"
-    echo "  Hyperion AI Health Check"
+    echo "  Hyperien AI Health Check"
     echo "  Autonomous experimentally trained AI - System Validation"
     echo "================================================================"
     echo ""
@@ -90,23 +90,23 @@ if [ -f "README.md" ]; then
     if [ -s "README.md" ]; then
         check_pass "README.md has content"
         
-        # Check for Hyperion AI mention
-        if grep -q "Hyperion AI" "README.md"; then
-            check_pass "README.md mentions Hyperion AI"
+        # Check for Hyperien AI mention
+        if grep -q "Hyperien AI" "README.md"; then
+            check_pass "README.md mentions Hyperien AI"
         else
-            check_warn "README.md does not mention Hyperion AI"
+            check_warn "README.md does not mention Hyperien AI"
         fi
     else
         check_fail "README.md is empty"
     fi
 fi
 
-# Check 3: Hyperion AI Interface & Mobile App
-print_section "Hyperion AI Interface & Mobile App"
+# Check 3: Hyperien AI Interface & Mobile App
+print_section "Hyperien AI Interface & Mobile App"
 
 # Check Web Interface
 if [ -f "docs/hyperion-prompt.html" ]; then
-    check_pass "Hyperion prompt interface exists"
+    check_pass "Hyperien prompt interface exists"
     
     # Validate HTML structure
     if grep -q "<!DOCTYPE html>" "docs/hyperion-prompt.html"; then
@@ -121,10 +121,10 @@ if [ -f "docs/hyperion-prompt.html" ]; then
         check_fail "HTML missing title tag"
     fi
     
-    if grep -q "Hyperion AI" "docs/hyperion-prompt.html"; then
-        check_pass "Hyperion AI branding present"
+    if grep -q "Hyperien AI" "docs/hyperion-prompt.html"; then
+        check_pass "Hyperien AI branding present"
     else
-        check_fail "Hyperion AI branding missing"
+        check_fail "Hyperien AI branding missing"
     fi
     
     # Check for essential elements
@@ -142,7 +142,7 @@ if [ -f "docs/hyperion-prompt.html" ]; then
         check_fail "HTML file is too small or empty"
     fi
 else
-    check_fail "Hyperion prompt interface is missing"
+    check_fail "Hyperien prompt interface is missing"
 fi
 
 # Check Mobile App
