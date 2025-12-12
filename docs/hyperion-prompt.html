@@ -23,6 +23,14 @@
             --shadow-glow: rgba(212, 175, 55, 0.4);
             --error-red: #ef4444;
             --error-glow: rgba(239, 68, 68, 0.5);
+            --deep-indigo-65: rgba(26, 26, 46, 0.65);
+            --violet-accent-25: rgba(139, 92, 246, 0.25);
+            --violet-accent-12: rgba(139, 92, 246, 0.12);
+            --violet-foam: #e9d5ff;
+            --lilac-ice: #f3e8ff;
+            --slate-mist: #cbd5e1;
+            --obsidian-55: rgba(10, 10, 20, 0.55);
+            --frost: #e2e8f0;
             
             /* Typography */
             --font-serif: 'Merriweather', serif;
@@ -34,10 +42,10 @@
             padding: 20px;
             border: 1.5px solid var(--violet-accent);
             border-radius: 12px;
-            background: rgba(26, 26, 46, 0.65);
+            background: var(--deep-indigo-65);
             box-shadow:
                 0 12px 28px rgba(0, 0, 0, 0.35),
-                0 0 24px rgba(139, 92, 246, 0.25);
+                0 0 24px var(--violet-accent-25);
         }
         
         .tone-top {
@@ -60,21 +68,21 @@
         
         .tone-pill--accent {
             border-color: var(--violet-accent);
-            color: #e9d5ff;
-            background: rgba(139, 92, 246, 0.12);
+            color: var(--violet-foam);
+            background: var(--violet-accent-12);
         }
         
         .tone-title {
             font-family: var(--font-serif);
             font-size: 20px;
             font-weight: 800;
-            color: #f3e8ff;
+            color: var(--lilac-ice);
             margin-bottom: 8px;
         }
         
         .tone-body {
             font-size: 15px;
-            color: #cbd5e1;
+            color: var(--slate-mist);
             line-height: 1.6;
         }
         
@@ -82,28 +90,15 @@
             margin-top: 14px;
             padding: 12px 14px;
             border-left: 3px solid var(--molten-gold);
-            background: rgba(10, 10, 20, 0.55);
+            background: var(--obsidian-55);
             border-radius: 10px;
         }
         
         .tone-quote {
             font-size: 14px;
-            color: #e2e8f0;
+            color: var(--frost);
             line-height: 1.5;
             font-style: italic;
-        }
-        
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            clip-path: inset(50%);
-            white-space: nowrap;
-            border: 0;
         }
         
         * {
