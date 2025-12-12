@@ -23,10 +23,82 @@
             --shadow-glow: rgba(212, 175, 55, 0.4);
             --error-red: #ef4444;
             --error-glow: rgba(239, 68, 68, 0.5);
+            --deep-indigo-65: rgba(26, 26, 46, 0.65);
+            --violet-accent-25: rgba(139, 92, 246, 0.25);
+            --violet-accent-12: rgba(139, 92, 246, 0.12);
+            --violet-foam: #e9d5ff;
+            --lilac-ice: #f3e8ff;
+            --slate-mist: #cbd5e1;
+            --obsidian-55: rgba(10, 10, 20, 0.55);
+            --frost: #e2e8f0;
             
             /* Typography */
             --font-serif: 'Merriweather', serif;
             --font-sans: 'DM Sans', sans-serif;
+        }
+        
+        .tone-preview {
+            margin-top: 24px;
+            padding: 20px;
+            border: 1.5px solid var(--violet-accent);
+            border-radius: 12px;
+            background: var(--deep-indigo-65);
+            box-shadow:
+                0 12px 28px rgba(0, 0, 0, 0.35),
+                0 0 24px var(--violet-accent-25);
+        }
+        
+        .tone-top {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        
+        .tone-pill {
+            font-size: 12px;
+            letter-spacing: 0.6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--molten-gold);
+            color: var(--bright-gold);
+            background: rgba(212, 175, 55, 0.08);
+            text-transform: uppercase;
+        }
+        
+        .tone-pill--accent {
+            border-color: var(--violet-accent);
+            color: var(--violet-foam);
+            background: var(--violet-accent-12);
+        }
+        
+        .tone-title {
+            font-family: var(--font-serif);
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--lilac-ice);
+            margin-bottom: 8px;
+        }
+        
+        .tone-body {
+            font-size: 15px;
+            color: var(--slate-mist);
+            line-height: 1.6;
+        }
+        
+        .tone-callout {
+            margin-top: 14px;
+            padding: 12px 14px;
+            border-left: 3px solid var(--molten-gold);
+            background: var(--obsidian-55);
+            border-radius: 10px;
+        }
+        
+        .tone-quote {
+            font-size: 14px;
+            color: var(--frost);
+            line-height: 1.5;
+            font-style: italic;
         }
         
         * {
@@ -262,6 +334,22 @@
             .one-liner {
                 font-size: 14px;
             }
+            
+            .tone-preview {
+                padding: 16px;
+            }
+            
+            .tone-title {
+                font-size: 18px;
+            }
+            
+            .tone-body {
+                font-size: 14px;
+            }
+            
+            .tone-top {
+                gap: 6px;
+            }
         }
     </style>
 </head>
@@ -271,6 +359,20 @@
             <h1 class="title">Hyperion AI</h1>
             <p class="tagline">Mythic power. Relentless intelligence.</p>
             <p class="one-liner">Builds flawless, wealth-generating apps at lightspeed.</p>
+        </div>
+        
+        <div class="tone-preview">
+            <div class="tone-top">
+                <span class="tone-pill">Model Fusion</span>
+                <span class="tone-pill tone-pill--accent">God-like tone</span>
+            </div>
+            <p class="tone-title">Omniversal Command Language</p>
+            <p class="tone-body">
+                Every model speaks as one titan voice—strategic, visual, and generative—so commands land with decisive, mythic clarity. Responses stay bold, sovereign, and wealth-focused.
+            </p>
+            <div class="tone-callout">
+                <p class="tone-quote"><span role="img" aria-label="Hyperion lightning sigil, representing unified power">⚡</span> “I am Hyperion, unified across every model. Issue your decree and I will respond in the language of titans.”</p>
+            </div>
         </div>
         
         <div class="prompt-box">
