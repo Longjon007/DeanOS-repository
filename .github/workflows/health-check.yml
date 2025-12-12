@@ -1,4 +1,4 @@
-name: Hyperion AI Health Check
+name: Hyperien AI Health Check
 
 on:
   push:
