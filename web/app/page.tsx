@@ -1,6 +1,14 @@
 import { createClient } from '../utils/supabase/server'
 import { cookies } from 'next/headers'
 
+type RawTodo = {
+  id: string | number
+  title?: string
+  task?: string
+  name?: string
+  description?: string
+}
+
 type Todo = {
   id: string
   title?: string
@@ -13,8 +21,8 @@ export default async function Page() {
   const cookieStore = await cookies()
   const supabase = createClient(cookieStore)
 
-  const { data: todos } = await supabase.from<Todo>('todos').select()
-  const normalizedTodos = todos?.map((todo) => ({
+  const { data: todos } = await supabase.from<RawTodo>('todos').select()
+  const normalizedTodos: Todo[] = todos?.map((todo) => ({
     ...todo,
     id: String(todo.id),
   })) ?? []
