@@ -245,6 +245,50 @@
             75% { transform: translateX(10px); }
         }
         
+        .status-indicator {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid var(--violet-accent);
+            color: var(--violet-accent);
+            font-size: 14px;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .status-indicator.active {
+            display: block;
+        }
+        
+        .status-indicator.processing {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--molten-gold);
+            color: var(--molten-gold);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--molten-gold);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
         /* Responsive Design */
         @media (max-width: 640px) {
             .container {
@@ -284,19 +328,157 @@
                     autocomplete="off"
                 />
             </div>
+            <div id="status" class="status-indicator"></div>
         </div>
     </div>
     
     <script>
-        // Optional: Demo error state toggle
+        // ElevenLabs API Configuration
+        const ELEVENLABS_API_KEY = 'YOUR_API_KEY_HERE'; // Replace with your actual API key
+        const ELEVENLABS_VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; // Default voice (Rachel)
+        const ELEVENLABS_API_URL = `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`;
+        
         const input = document.querySelector('.command-input');
+        const statusIndicator = document.getElementById('status');
+        let isProcessing = false;
         
-        // You can programmatically add error class like this:
-        // input.classList.add('error');
+        // Update status message
+        function updateStatus(message, isProcessing = false) {
+            statusIndicator.textContent = message;
+            statusIndicator.className = 'status-indicator active';
+            if (isProcessing) {
+                statusIndicator.classList.add('processing');
+                statusIndicator.innerHTML = '<span class="spinner"></span>' + message;
+            }
+        }
         
-        // Example: Remove error class on input
+        function clearStatus() {
+            statusIndicator.className = 'status-indicator';
+        }
+        
+        // ElevenLabs Text-to-Speech Function
+        async function speakWithElevenLabs(text) {
+            if (!text || text.trim() === '') {
+                console.error('No text provided for speech synthesis');
+                return;
+            }
+            
+            if (!ELEVENLABS_API_KEY || ELEVENLABS_API_KEY === 'YOUR_API_KEY_HERE') {
+                console.error('ElevenLabs API key not configured');
+                input.classList.add('error');
+                updateStatus('⚠️ ElevenLabs API key not configured');
+                setTimeout(clearStatus, 3000);
+                return;
+            }
+            
+            try {
+                isProcessing = true;
+                input.disabled = true;
+                input.placeholder = 'Processing command...';
+                updateStatus('Generating voice response...', true);
+                
+                const response = await fetch(ELEVENLABS_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'audio/mpeg',
+                        'Content-Type': 'application/json',
+                        'xi-api-key': ELEVENLABS_API_KEY
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        model_id: 'eleven_monolingual_v1',
+                        voice_settings: {
+                            stability: 0.5,
+                            similarity_boost: 0.5
+                        }
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.detail?.message || `API request failed: ${response.status} ${response.statusText}`);
+                }
+                
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const audio = new Audio(audioUrl);
+                
+                updateStatus('🔊 Playing voice response...');
+                
+                audio.onended = () => {
+                    URL.revokeObjectURL(audioUrl);
+                    isProcessing = false;
+                    input.disabled = false;
+                    input.placeholder = 'Issue a command…';
+                    input.value = '';
+                    updateStatus('✓ Command processed successfully');
+                    setTimeout(clearStatus, 2000);
+                };
+                
+                audio.onerror = (e) => {
+                    console.error('Audio playback error:', e);
+                    isProcessing = false;
+                    input.disabled = false;
+                    input.placeholder = 'Issue a command…';
+                    input.classList.add('error');
+                    updateStatus('✗ Audio playback error');
+                    setTimeout(clearStatus, 3000);
+                };
+                
+                await audio.play();
+                
+            } catch (error) {
+                console.error('ElevenLabs API error:', error);
+                input.classList.add('error');
+                updateStatus(`✗ Error: ${error.message}`);
+                isProcessing = false;
+                input.disabled = false;
+                input.placeholder = 'Issue a command…';
+                setTimeout(clearStatus, 3000);
+            }
+        }
+        
+        // Handle Enter key to submit command
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !isProcessing) {
+                const command = this.value.trim();
+                if (command) {
+                    // Generate a response based on the command
+                    const response = generateResponse(command);
+                    speakWithElevenLabs(response);
+                }
+            }
+        });
+        
+        // Generate AI response based on command
+        function generateResponse(command) {
+            const lowerCommand = command.toLowerCase();
+            
+            // Simple response system - can be extended with actual AI integration
+            if (lowerCommand.includes('hello') || lowerCommand.includes('hi')) {
+                return 'Greetings. I am Hyperion AI, your autonomous intelligence assistant. How may I assist you today?';
+            } else if (lowerCommand.includes('help')) {
+                return 'I am Hyperion AI, capable of building flawless applications at lightspeed. Issue your commands, and I shall execute them with mythic power and relentless intelligence.';
+            } else if (lowerCommand.includes('status') || lowerCommand.includes('ready')) {
+                return 'All systems operational. Hyperion AI is ready to serve. Awaiting your command.';
+            } else if (lowerCommand.includes('build') || lowerCommand.includes('create') || lowerCommand.includes('make')) {
+                return 'Initiating build sequence. I will construct your application with precision and excellence. Specify the requirements, and I shall manifest your vision.';
+            } else {
+                return `Command received: ${command}. Processing your request with full computational power. Hyperion AI is at your service.`;
+            }
+        }
+        
+        // Remove error class on input
         input.addEventListener('input', function() {
             this.classList.remove('error');
+        });
+        
+        // Show initial ready message
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                updateStatus('🎯 Hyperion AI ready. Press Enter to speak your command.');
+                setTimeout(clearStatus, 4000);
+            }, 500);
         });
     </script>
 </body>
