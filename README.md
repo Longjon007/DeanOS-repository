@@ -6,7 +6,7 @@ Autonomous experimentally trained AI and part of the DeanOS ecosystem.
    - Freeze the feature set for both the Next.js web app (`web/`) and Expo mobile app (`app/`), then run:
      - `./health_check.sh`
      - In `web/`: `npm run lint && npm run build`
-     - In `app/`: `npx expo run:android --variant release` or `npx expo run:ios`, then open the app to log in and issue a sample request
+     - In `app/`: `expo run:android` or `expo run:ios`, then open the app to log in and issue a sample request
    - Verify data flows against Supabase, apply environment variables securely, and confirm login/onboarding paths work end-to-end.
 2. **Harden security and compliance**
    - Enable Supabase RLS policies, rotate keys, add rate limiting, and ensure logging/monitoring is active.
@@ -14,7 +14,7 @@ Autonomous experimentally trained AI and part of the DeanOS ecosystem.
    - Replace the current template in SECURITY.md with Hyperion-specific policies.
    - Align data handling and operational controls to match the published policies.
 3. **Package and deploy**
-   - Web: In `web/`: `npm install`, `npm run lint`, `npm run build`, then deploy the generated build to the chosen host with a branded domain and TLS.
+   - Web: In `web/`: `npm install && npm run lint && npm run build`, then deploy the generated build to the chosen host with a branded domain and TLS.
    - Mobile:
      - Produce signed store builds through Expo (Android/iOS)
      - Supply icons/screenshots/descriptions
