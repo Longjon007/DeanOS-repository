@@ -1,8 +1,8 @@
-# Hyperien AI Health Check System
+# Hyperion AI Health Check System
 
 ## Overview
 
-The Hyperien AI Health Check system provides comprehensive validation and monitoring of the Hyperien AI autonomous AI system. It ensures all critical components are operational and properly configured.
+The Hyperion AI Health Check system provides comprehensive validation and monitoring of the Hyperion AI autonomous AI system. It ensures all critical components are operational and properly configured.
 
 ## Components
 
@@ -12,7 +12,7 @@ A comprehensive bash script that validates:
 
 - **Repository Structure**: Verifies essential files and directories exist
 - **Documentation**: Checks README and documentation content
-- **Hyperien AI Interface**: Validates the HTML prompt interface (`docs/hyperien-prompt.html`)
+- **Hyperion AI Interface**: Validates the HTML prompt interface (`docs/hyperion-prompt.html`)
 - **Git Configuration**: Verifies repository setup and remote configuration
 - **File Permissions**: Ensures scripts are properly configured
 - **System Dependencies**: Checks for required tools (git, bash)
@@ -61,11 +61,11 @@ The health check calculates an overall system health percentage:
 2. ✓ Documentation directory (docs/) exists
 3. ✓ Git repository is initialized
 4. ✓ .github directory exists
-5. ✓ README mentions Hyperien AI
-6. ✓ Hyperien prompt interface exists
+5. ✓ README mentions Hyperion AI
+6. ✓ Hyperion prompt interface exists
 7. ✓ HTML has valid DOCTYPE
 8. ✓ HTML has title tag
-9. ✓ Hyperien AI branding present
+9. ✓ Hyperion AI branding present
 10. ✓ Command input element present
 11. ✓ HTML file has substantial content
 12. ✓ Git repository is valid
