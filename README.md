@@ -1,2 +1,2 @@
-# Hyperien AI
-Autonomous experimentally trained AI
+# VitalisOS
+Autonomous experimentally trained AI (formerly DeanOS)
