@@ -376,8 +376,8 @@ EOF
                 # Backup existing config
                 cp supabase/config.toml supabase/config.toml.backup
                 
-                # Update project_id (project_ref is validated, safe to use)
-                sed -i "s/project_id = \".*\"/project_id = \"$project_ref\"/" supabase/config.toml
+                # Update project_id with properly escaped variable
+                sed -i 's/project_id = ".*"/project_id = "'"$project_ref"'"/' supabase/config.toml
                 
                 print_success "Updated supabase/config.toml (backup saved as config.toml.backup)"
             else
