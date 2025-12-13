@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { supabase } from './utils/supabase';
 
+// Optimization: Define renderItem outside component to prevent re-creation on every render
+const renderItem = ({ item }) => <Text>{item.title}</Text>;
+
 export default function App() {
   const [todos, setTodos] = useState([]);
 
@@ -32,7 +35,7 @@ export default function App() {
       <FlatList
         data={todos}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <Text key={item.id}>{item.title}</Text>}
+        renderItem={renderItem}
       />
     </View>
   );
