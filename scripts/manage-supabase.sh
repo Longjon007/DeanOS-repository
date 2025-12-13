@@ -94,6 +94,33 @@ prompt_yes_no() {
     fi
 }
 
+# URL encode a string for safe use in database URLs
+url_encode() {
+    local string="$1"
+    local encoded=""
+    local length="${#string}"
+    
+    for (( i=0; i<length; i++ )); do
+        local c="${string:i:1}"
+        case "$c" in
+            [a-zA-Z0-9.~_-]) encoded+="$c" ;;
+            *) printf -v hex '%%%02X' "'$c"; encoded+="$hex" ;;
+        esac
+    done
+    
+    echo "$encoded"
+}
+
+# Validate project reference format
+validate_project_ref() {
+    local ref="$1"
+    if [[ "$ref" =~ ^[a-z]{20}$ ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 # Check if Supabase CLI is installed
 check_supabase_cli() {
     if ! command -v supabase &> /dev/null; then
@@ -337,11 +364,13 @@ EOF
     
     # Add database URLs if password provided
     if [ -n "$db_password" ]; then
+        # URL encode password for safe use in connection strings
+        local encoded_password=$(url_encode "$db_password")
         cat >> "$output_file" << EOF
 
 # Database URLs for Prisma
-DATABASE_URL=postgres://postgres:${db_password}@db.${project_ref}.supabase.co:6543/postgres?pgbouncer=true
-DIRECT_URL=postgres://postgres:${db_password}@db.${project_ref}.supabase.co:5432/postgres
+DATABASE_URL=postgres://postgres:${encoded_password}@db.${project_ref}.supabase.co:6543/postgres?pgbouncer=true
+DIRECT_URL=postgres://postgres:${encoded_password}@db.${project_ref}.supabase.co:5432/postgres
 EOF
     else
         cat >> "$output_file" << EOF
@@ -424,27 +453,51 @@ handle_selection() {
             ;;
         2)
             project_ref=$(prompt_input "Enter project reference")
-            get_project_details "$project_ref"
+            if validate_project_ref "$project_ref"; then
+                get_project_details "$project_ref"
+            else
+                print_error "Invalid project reference format (expected 20 lowercase letters)"
+            fi
             ;;
         3)
             project_ref=$(prompt_input "Enter project reference")
-            show_api_keys "$project_ref"
+            if validate_project_ref "$project_ref"; then
+                show_api_keys "$project_ref"
+            else
+                print_error "Invalid project reference format (expected 20 lowercase letters)"
+            fi
             ;;
         4)
             project_ref=$(prompt_input "Enter project reference")
-            check_project_health "$project_ref"
+            if validate_project_ref "$project_ref"; then
+                check_project_health "$project_ref"
+            else
+                print_error "Invalid project reference format (expected 20 lowercase letters)"
+            fi
             ;;
         5)
             project_ref=$(prompt_input "Enter project reference")
-            link_project "$project_ref"
+            if validate_project_ref "$project_ref"; then
+                link_project "$project_ref"
+            else
+                print_error "Invalid project reference format (expected 20 lowercase letters)"
+            fi
             ;;
         6)
             project_ref=$(prompt_input "Enter project reference")
-            generate_env_config "$project_ref"
+            if validate_project_ref "$project_ref"; then
+                generate_env_config "$project_ref"
+            else
+                print_error "Invalid project reference format (expected 20 lowercase letters)"
+            fi
             ;;
         7)
             project_ref=$(prompt_input "Enter project reference")
-            run_migrations "$project_ref"
+            if validate_project_ref "$project_ref"; then
+                run_migrations "$project_ref"
+            else
+                print_error "Invalid project reference format (expected 20 lowercase letters)"
+            fi
             ;;
         8)
             echo ""
