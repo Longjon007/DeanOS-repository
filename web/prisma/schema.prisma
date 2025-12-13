@@ -21,3 +21,42 @@ model Subscription {
 
   @@map("subscriptions")
 }
+
+// DeanOS Core Models
+model SystemLog {
+  id        String   @id @default(cuid())
+  timestamp DateTime @default(now())
+  level     String   // INFO, WARN, ERROR
+  component String   // Which part of DeanOS
+  message   String
+  metadata  Json?
+  createdAt DateTime @default(now())
+  
+  @@index([timestamp])
+  @@index([level])
+  @@index([component])
+}
+
+model HealthCheck {
+  id          String   @id @default(cuid())
+  timestamp   DateTime @default(now())
+  passed      Int
+  failed      Int
+  warnings    Int
+  percentage  Float
+  details     Json
+  createdAt   DateTime @default(now())
+  
+  @@index([timestamp])
+}
+
+model Configuration {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  category  String
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  
+  @@index([category])
+}

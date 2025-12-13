@@ -1,0 +1,45 @@
+name: Database Health Check
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'web/prisma/**'
+      - '.env.example'
+      - 'check-database.sh'
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 8 * * *'  # Daily at 8 AM UTC
+
+jobs:
+  database-health:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: |
+          if [ -f web/package.json ]; then
+            cd web
+            npm install
+          fi
+      
+      - name: Run database health check
+        run: |
+          chmod +x check-database.sh
+          ./check-database.sh
+      
+      - name: Validate Prisma schema
+        run: |
+          if [ -f web/prisma/schema.prisma ]; then
+            cd web
+            npx prisma validate
+          fi
