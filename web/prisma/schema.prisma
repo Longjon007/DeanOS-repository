@@ -25,12 +25,12 @@ model Subscription {
 // DeanOS Core Models
 model SystemLog {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  timestamp DateTime @default(now()) @db.Timestamptz(6)
+  timestamp DateTime @default(now()) @db.Timestamptz(6)  // Event occurrence time
   level     String   // INFO, WARN, ERROR
   component String   // Which part of DeanOS
   message   String
   metadata  Json?
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @db.Timestamptz(6)  // Record creation time
   
   @@index([timestamp])
   @@index([level])
@@ -39,13 +39,13 @@ model SystemLog {
 
 model HealthCheck {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  timestamp   DateTime @default(now()) @db.Timestamptz(6)
+  timestamp   DateTime @default(now()) @db.Timestamptz(6)  // Check execution time
   passed      Int
   failed      Int
   warnings    Int
   percentage  Float
   details     Json
-  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)  // Record creation time
   
   @@index([timestamp])
 }
