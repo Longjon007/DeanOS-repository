@@ -4,6 +4,15 @@
 
 DeanOS uses both Supabase migrations and Prisma schema for database management. This document ensures both systems stay synchronized across different branches and environments.
 
+## Supabase Automation Tools
+
+DeanOS provides automated scripts for managing Supabase projects:
+
+- **[init-supabase.sh](../scripts/init-supabase.sh)** - Create new Supabase projects with auto-configuration
+- **[manage-supabase.sh](../scripts/manage-supabase.sh)** - Manage existing projects, API keys, and migrations
+
+For complete API documentation and usage examples, see [SUPABASE_API.md](./SUPABASE_API.md).
+
 ## Migration Systems
 
 ### Supabase Migrations
