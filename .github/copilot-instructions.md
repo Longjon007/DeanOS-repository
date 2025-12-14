@@ -91,7 +91,7 @@ DeanOS is an autonomous experimentally trained AI system. This repository contai
 
 ## Project-Specific Patterns
 
-### Hyperion AI Interface
+### Hyperien AI Interface
 - Validate HTML structure and content
 - Check for required elements (DOCTYPE, title, input fields)
 - Ensure proper branding and styling
