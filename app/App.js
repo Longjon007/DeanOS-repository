@@ -8,16 +8,17 @@ export default function App() {
   useEffect(() => {
     const getTodos = async () => {
       try {
-        const { data: todos, error } = await supabase.from('todos').select();
+        const { data: todos, error } = await supabase
+          .from('todos')
+          .select('id, title')
+          .limit(100);
 
         if (error) {
           console.error('Error fetching todos:', error.message);
           return;
         }
 
-        if (todos && todos.length > 0) {
-          setTodos(todos);
-        }
+        setTodos(Array.isArray(todos) ? todos : []);
       } catch (error) {
         console.error('Error fetching todos:', error.message);
       }
