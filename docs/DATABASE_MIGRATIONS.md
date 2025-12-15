@@ -100,7 +100,7 @@ npx prisma format
 ```env
 # Supabase Connection
 NEXT_PUBLIC_SUPABASE_URL=https://pitmtcljvkwcquqoepgz.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your_publishable_key
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_publishable_key
 
 # Database URLs for Prisma
 DATABASE_URL="postgres://postgres:[PASSWORD]@db.pitmtcljvkwcquqoepgz.supabase.co:6543/postgres?pgbouncer=true"
