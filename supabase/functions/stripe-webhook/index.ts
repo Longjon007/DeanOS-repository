@@ -74,7 +74,19 @@ serve(async (req) => {
 
             // Optional: Handle cancellations or failures
             case 'customer.subscription.deleted':
-                // Logic to set user status to 'inactive'
+                {
+                    const subscription = event.data.object as Stripe.Subscription;
+                    const { error: deleteError } = await supabaseAdmin
+                        .from('subscriptions')
+                        .update({ status: 'inactive' })
+                        .eq('stripe_customer_id', subscription.customer as string);
+
+                    if (deleteError) {
+                         console.error('Error updating subscription status:', deleteError);
+                    } else {
+                         console.log(`Subscription for customer ${subscription.customer} deactivated.`);
+                    }
+                }
                 break;
             default:
                 console.log(`Unhandled event type ${event.type}`);
