@@ -1,122 +1,40 @@
-# GitHub Copilot Instructions for DeanOS
+# GitHub Copilot Instructions for DeanOS (Hyperion AI)
 
-## Project Overview
+## Repo map (the 3 runtimes)
 
-DeanOS is an autonomous experimentally trained AI system. This repository contains the core system components, health monitoring, and documentation.
+- `app/`: Expo React Native client. Entry: `app/App.js`. Supabase client wrapper: `app/utils/supabase.js`.
+- `web/`: Next.js 14 (App Router). Entry: `web/app/page.tsx`. Supabase SSR wrapper: `web/utils/supabase/server.ts`. Prisma schema: `web/prisma/schema.prisma`.
+- `supabase/`: Supabase CLI config (`supabase/config.toml`), SQL migrations (`supabase/migrations/*.sql`), Edge Functions (`supabase/functions/*`).
 
-## Coding Style and Conventions
+## Database is dual-tracked (Supabase SQL + Prisma)
 
-### Shell Scripts
-- Use bash for all shell scripts
-- Include shebang `#!/bin/bash` at the top of all scripts
-- Add descriptive comments explaining script purpose and complex logic
-- Use meaningful variable names in UPPER_CASE for constants and lower_case for variables
-- For comprehensive health checks, use `set +e` around specific check blocks to capture and handle errors manually, then re-enable with `set -e`
-- Always make scripts executable with proper permissions (chmod +x)
+- Treat `supabase/migrations/*.sql` as the source of truth for schema changes.
+- Mirror changes in `web/prisma/schema.prisma` using `@map` / `@@map` to match snake_case tables/columns (example: `model Subscription @@map("subscriptions")`).
+- Validate sync with `./scripts/validate_migrations.sh` and reference `docs/DATABASE_MIGRATIONS.md` for the conventions.
 
-### Output and Formatting
-- Use ANSI color codes for output (RED, GREEN, YELLOW, BLUE, NC)
-- Provide clear, user-friendly messages with appropriate symbols (✓, ✗, ⚠)
-- Include section headers to organize output
-- Maintain consistent formatting across all output
+## Supabase client patterns (copy these, don’t reinvent)
 
-## Documentation
+- Mobile: `app/utils/supabase.js` uses `@supabase/supabase-js` with `AsyncStorage` + `processLock`.
+	- Env vars: `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_KEY` (see `app/.env.example`).
+- Web: `web/utils/supabase/server.ts` builds an SSR client via `@supabase/ssr` and Next’s cookie store.
+	- Env vars: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY` (see `web/.env.example`).
 
-### README Files
-- Clearly identify the project as part of the DeanOS ecosystem in the repository README
-- Include clear project overview and purpose
-- Provide usage instructions and examples
-- Document all available commands and options
-- Keep documentation up-to-date with code changes
+## Stripe webhook (Supabase Edge Function)
 
-### Code Comments
-- Add header comments to all scripts explaining their purpose
-- Comment complex logic or non-obvious implementations
-- Document all functions with their parameters and return values
-- Include examples where helpful
+- Handler: `supabase/functions/stripe-webhook/index.ts`.
+	- Reads raw body (`req.text()`), verifies `Stripe-Signature` using `STRIPE_WEBHOOK_SECRET`, then updates `public.subscriptions` via the Service Role key.
+	- The checkout flow must set `metadata: { user_id }` on the Stripe session; the handler keys off `session.metadata?.user_id`.
+	- If you touch this file, watch for unsafe non-null assertions (`!`) around env vars/headers—missing config will crash the function.
+- If present in your branch, function-local docs/tests live alongside the handler (e.g. `supabase/functions/stripe-webhook/README.md`, `index_test.ts`).
 
-### Markdown Files
-- Use proper markdown syntax and formatting
-- Include table of contents for long documents
-- Use code blocks with appropriate language tags
-- Add visual separators (horizontal rules) for better readability
+## Commands that matter (from the repo)
 
-## Testing and Validation
+- Health & validation (bash): `./health_check.sh`, `./scripts/validate_migrations.sh`.
+	- On Windows, run these via WSL or Git-Bash.
+- Mobile (Expo): `app/package.json` → `npm run start` / `android` / `ios` / `web`.
+- Web (Next): `web/package.json` → `npm run dev` / `build` / `start` / `lint`.
+- Supabase local dev: ports and toggles are in `supabase/config.toml` (API 54321, DB 54322, Studio 54324). Use the Supabase CLI (`supabase start`) if you’re running the stack locally.
 
-### Health Checks
-- Create comprehensive validation for all system components
-- Check for file existence before operations
-- Validate configuration and dependencies
-- Implement counters for pass/fail/warning states
-- Calculate and report health percentages
-- Use exit codes appropriately (0 for success, 1 for failure)
+## Bash script style (match existing scripts)
 
-### Testing Guidelines
-- Test all scripts manually before committing
-- Verify output formatting and colors
-- Check edge cases and error conditions
-- Ensure scripts work in different environments
-
-## Security
-
-### Secrets and Credentials
-- Never commit secrets, API keys, or credentials
-- Use environment variables for sensitive data
-- Document required environment variables in README
-
-### File Permissions
-- Ensure executable scripts have proper permissions
-- Validate file permissions in health checks
-- Use secure default permissions for new files
-
-## Git and GitHub
-
-### Commit Messages
-- Write clear, descriptive commit messages
-- Use present tense ("Add feature" not "Added feature")
-- Keep first line under 50 characters
-- Add detailed description when needed
-
-### Repository Structure
-- Place workflows in `.github/workflows/`
-- Store documentation in `docs/` directory
-- Keep health check scripts in repository root
-- Organize custom agents in `.github/agents/`
-
-### GitHub Actions
-- Add health check workflows for continuous monitoring
-- Run checks on push, pull requests, and schedule
-- Generate clear output in workflow logs
-- Use latest stable action versions
-
-## Project-Specific Patterns
-
-### Hyperion AI Interface
-- Validate HTML structure and content
-- Check for required elements (DOCTYPE, title, input fields)
-- Ensure proper branding and styling
-- Verify substantial content exists
-
-### System Monitoring
-- Implement comprehensive health metrics
-- Track multiple validation points
-- Provide actionable feedback on failures
-- Calculate overall system health percentage
-- Use consistent check result functions (check_pass, check_fail, check_warn)
-
-### File Structure Validation
-- Verify essential files exist (README, docs, .github)
-- Check git repository configuration
-- Validate remote and branch information
-- Detect and warn about large files
-
-## Best Practices
-
-1. **Keep it Simple**: Write clear, maintainable code
-2. **Be Explicit**: Don't rely on implicit behavior
-3. **Fail Gracefully**: Handle errors appropriately
-4. **Provide Context**: Give users meaningful error messages
-5. **Stay Consistent**: Follow established patterns in the codebase
-6. **Document Everything**: Code should be self-documenting with helpful comments
-7. **Test Thoroughly**: Validate all changes before committing
-8. **Think About Users**: Make tools easy to use and understand
+- Follow `health_check.sh` and `scripts/validate_migrations.sh`: ANSI colors + ✓/✗/⚠ counters + section headers; keep `set +e` during checks so all failures are reported.
