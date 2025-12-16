@@ -61,7 +61,7 @@ if [ -f ".env" ]; then
         check_pass "Password has been configured"
     fi
 else
-    check_fail ".env file not found"
+    check_warn ".env file not found (expected in CI/local setup)"
     check_warn "Run: cp .env.example .env"
 fi
 echo ""
