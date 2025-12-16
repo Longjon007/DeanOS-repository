@@ -19,13 +19,14 @@
 - Web: `web/utils/supabase/server.ts` builds an SSR client via `@supabase/ssr` and Next’s cookie store.
 	- Env vars: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY` (see `web/.env.example`).
 
-## Stripe webhook (Supabase Edge Function)
+## Stripe integration
 
-- Handler: `supabase/functions/stripe-webhook/index.ts`.
+- **Checkout session creation**: Currently not implemented. When adding this, create checkout sessions in API routes (Next.js API routes in `web/app/api/` or Supabase Edge Functions in `supabase/functions/`). **CRITICAL**: Always include `metadata: { user_id: user.id }` in the session creation call—the webhook handler requires this to link payments to users.
+- **Webhook handler**: `supabase/functions/stripe-webhook/index.ts`.
 	- Reads raw body (`req.text()`), verifies `Stripe-Signature` using `STRIPE_WEBHOOK_SECRET`, then updates `public.subscriptions` via the Service Role key.
 	- The checkout flow must set `metadata: { user_id }` on the Stripe session; the handler keys off `session.metadata?.user_id`.
 	- If you touch this file, watch for unsafe non-null assertions (`!`) around env vars/headers—missing config will crash the function.
-- If present in your branch, function-local docs/tests live alongside the handler (e.g. `supabase/functions/stripe-webhook/README.md`, `index_test.ts`).
+	- Full setup docs: `supabase/functions/stripe-webhook/README.md` (includes testing with Stripe CLI, security notes, troubleshooting).
 
 ## Commands that matter (from the repo)
 
