@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { supabase } from './utils/supabase';
 
@@ -26,13 +26,17 @@ export default function App() {
     getTodos();
   }, []);
 
+  // Optimization: Memoize renderItem and keyExtractor to prevent re-creation on every render
+  const renderItem = useCallback(({ item }) => <Text>{item.title}</Text>, []);
+  const keyExtractor = useCallback((item) => item.id.toString(), []);
+
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Todo List</Text>
       <FlatList
         data={todos}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <Text key={item.id}>{item.title}</Text>}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
       />
     </View>
   );
