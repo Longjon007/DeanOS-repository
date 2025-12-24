@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { supabase } from './utils/supabase';
 
 export default function App() {
@@ -26,14 +26,36 @@ export default function App() {
     getTodos();
   }, []);
 
+  const renderItem = useCallback(({ item }) => (
+    <Text key={item.id} style={styles.item}>{item.title}</Text>
+  ), []);
+
+  const keyExtractor = useCallback((item) => item.id.toString(), []);
+
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Todo List</Text>
+    <View style={styles.container}>
+      <Text style={styles.header}>Todo List</Text>
       <FlatList
         data={todos}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <Text key={item.id}>{item.title}</Text>}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
       />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  header: {
+    marginBottom: 20,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  item: {
+    padding: 10,
+  }
+});
