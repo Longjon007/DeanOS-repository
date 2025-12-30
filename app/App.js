@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { supabase } from './utils/supabase';
 
+// Hoisted for performance: stable reference across re-renders
+const renderItem = ({ item }) => <Text>{item.title}</Text>;
+const keyExtractor = (item) => item.id.toString();
+
 export default function App() {
   const [todos, setTodos] = useState([]);
 
@@ -31,8 +35,8 @@ export default function App() {
       <Text>Todo List</Text>
       <FlatList
         data={todos}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <Text key={item.id}>{item.title}</Text>}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
       />
     </View>
   );
