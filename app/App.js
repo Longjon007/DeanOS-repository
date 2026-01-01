@@ -6,6 +6,11 @@ export default function App() {
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
+    // Verify Supabase configuration
+    if (!process.env.EXPO_PUBLIC_SUPABASE_URL || !process.env.EXPO_PUBLIC_SUPABASE_KEY) {
+      console.warn("Supabase environment variables are missing! Please check your .env configuration.");
+    }
+
     const getTodos = async () => {
       try {
         const { data: todos, error } = await supabase.from('todos').select();
