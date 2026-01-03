@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { supabase } from './utils/supabase';
 
+// ⚡ Bolt: Hoisted keyExtractor to prevent re-creation on every render
+const keyExtractor = (item) => item.id.toString();
+
+// ⚡ Bolt: Hoisted renderItem to prevent re-creation on every render
+// Note: 'key' prop is not needed here as FlatList handles it via keyExtractor
+const renderItem = ({ item }) => <Text>{item.title}</Text>;
+
 export default function App() {
   const [todos, setTodos] = useState([]);
 
@@ -31,8 +38,8 @@ export default function App() {
       <Text>Todo List</Text>
       <FlatList
         data={todos}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <Text key={item.id}>{item.title}</Text>}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
       />
     </View>
   );
