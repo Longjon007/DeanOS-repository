@@ -1,1 +1,10 @@
 .env
+node_modules/
+web/node_modules/
+app/node_modules/
+.next/
+dist/
+build/
+coverage/
+.DS_Store
+*.log
