@@ -1,1 +1,7 @@
 .env
+node_modules/
+**/node_modules/
+web/node_modules/
+app/node_modules/
+.next/
+.expo/
