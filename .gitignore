@@ -1,1 +1,23 @@
+# Dependencies
+node_modules/
+web/node_modules/
+app/node_modules/
+**/node_modules/
+
+# Environment variables
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# Build outputs
+.next/
+.expo/
+dist/
+build/
+
+# System files
+.DS_Store
+Thumbs.db
