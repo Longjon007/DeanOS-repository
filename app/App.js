@@ -2,13 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { supabase } from './utils/supabase';
 
+// ⚡ Bolt: Hoisted to prevent recreation on every render
+const renderItem = ({ item }) => <Text>{item.title}</Text>;
+const keyExtractor = (item) => item.id.toString();
+
 export default function App() {
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
     const getTodos = async () => {
       try {
-        const { data: todos, error } = await supabase.from('todos').select();
+        // ⚡ Bolt: Select only necessary fields to reduce payload size
+        const { data: todos, error } = await supabase.from('todos').select('id, title');
 
         if (error) {
           console.error('Error fetching todos:', error.message);
@@ -31,8 +36,8 @@ export default function App() {
       <Text>Todo List</Text>
       <FlatList
         data={todos}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <Text key={item.id}>{item.title}</Text>}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
       />
     </View>
   );
