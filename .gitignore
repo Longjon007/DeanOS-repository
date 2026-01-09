@@ -1,1 +1,9 @@
 .env
+node_modules/
+**/node_modules/
+.next/
+.expo/
+*.log
+.DS_Store
+dist/
+coverage/
