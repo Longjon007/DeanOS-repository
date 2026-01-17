@@ -21,3 +21,15 @@ model Subscription {
 
   @@map("subscriptions")
 }
+
+// Todos table - synced with Supabase migration 20240523000000_create_todos.sql
+model Todo {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title      String
+  isComplete Boolean? @default(false) @map("is_complete")
+  userId     String   @map("user_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  @@map("todos")
+}
