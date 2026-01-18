@@ -8,7 +8,8 @@ export default function App() {
   useEffect(() => {
     const getTodos = async () => {
       try {
-        const { data: todos, error } = await supabase.from('todos').select();
+        // Optimize: Select only needed columns (id, title) to reduce payload size
+        const { data: todos, error } = await supabase.from('todos').select('id, title');
 
         if (error) {
           console.error('Error fetching todos:', error.message);
@@ -32,7 +33,7 @@ export default function App() {
       <FlatList
         data={todos}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <Text key={item.id}>{item.title}</Text>}
+        renderItem={({ item }) => <Text>{item.title}</Text>}
       />
     </View>
   );
