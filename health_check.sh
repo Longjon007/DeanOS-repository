@@ -204,6 +204,22 @@ fi
 # Check MCP Configuration
 if [ -f "mcp.json" ]; then
     check_pass "MCP configuration exists"
+
+    # Verify project_ref matches supabase/config.toml
+    if [ -f "supabase/config.toml" ]; then
+        PROJECT_ID=$(grep "project_id" supabase/config.toml | head -n 1 | cut -d '"' -f 2)
+        if [ -n "$PROJECT_ID" ]; then
+            if grep -q "$PROJECT_ID" "mcp.json"; then
+                check_pass "MCP configuration matches project_id ($PROJECT_ID)"
+            else
+                check_fail "MCP configuration does not match project_id ($PROJECT_ID)"
+            fi
+        else
+            check_warn "Could not extract project_id from supabase/config.toml"
+        fi
+    else
+        check_warn "supabase/config.toml missing, cannot verify MCP configuration match"
+    fi
 else
     check_warn "MCP configuration is missing"
 fi
