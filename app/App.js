@@ -32,7 +32,7 @@ export default function App() {
       <FlatList
         data={todos}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <Text key={item.id}>{item.title}</Text>}
+        renderItem={({ item }) => <Text>{item.title}</Text>}
       />
     </View>
   );
