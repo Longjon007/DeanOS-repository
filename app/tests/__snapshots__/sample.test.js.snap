@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Sample Mobile Test renders correctly 1`] = `
+<Text>
+  Hello Mobile
+</Text>
+`;
