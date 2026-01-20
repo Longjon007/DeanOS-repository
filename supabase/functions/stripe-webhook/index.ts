@@ -2,7 +2,6 @@
 // Securely handles incoming Stripe events and updates the Supabase database.
 // This function is critical for instantly activating services after an overage charge.
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 // Import Stripe library for security verification
 import Stripe from "npm:stripe@^14.0";
 import { createClient } from 'npm:@supabase/supabase-js@^2.39.3';
@@ -24,7 +23,7 @@ const supabaseAdmin = createClient(
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 );
 
-serve(async (req) => {
+Deno.serve(async (req) => {
     // 1. Handle CORS Preflight
     if (req.method === 'OPTIONS') {
         return new Response('ok', { headers: corsHeaders });
@@ -39,7 +38,7 @@ serve(async (req) => {
     try {
         const reqBody = await req.text();
         event = stripe.webhooks.constructEvent(reqBody, signature!, webhookSecret!);
-    } catch (err) {
+    } catch (err: any) {
         // If signature verification fails, reject the request immediately [29]
         console.error(`Webhook signature verification failed: ${err.message}`);
         return new Response(`Webhook Error: ${err.message}`, { status: 400 });
@@ -79,7 +78,7 @@ serve(async (req) => {
             default:
                 console.log(`Unhandled event type ${event.type}`);
         }
-    } catch (error) {
+    } catch (error: any) {
         console.error(`Error processing Stripe event: ${error.message}`);
         return new Response(JSON.stringify({ error: 'Failed to process event' }), { status: 500 });
     }
