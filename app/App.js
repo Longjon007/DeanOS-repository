@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { supabase } from './utils/supabase';
 
+// Optimization: Define renderItem outside the component to ensure stability across renders.
+// This prevents creating a new function instance on every App render, allowing FlatList to optimize updates.
+const renderItem = ({ item }) => <Text>{item.title}</Text>;
+
+// Optimization: Define keyExtractor outside for stability.
+const keyExtractor = (item) => item.id.toString();
+
 export default function App() {
   const [todos, setTodos] = useState([]);
 
@@ -31,8 +38,8 @@ export default function App() {
       <Text>Todo List</Text>
       <FlatList
         data={todos}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <Text key={item.id}>{item.title}</Text>}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
       />
     </View>
   );
