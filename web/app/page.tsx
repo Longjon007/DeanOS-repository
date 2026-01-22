@@ -10,7 +10,7 @@ export default async function Page() {
   return (
     <ul>
       {todos?.map((todo) => (
-        <li key={todo.id}>{JSON.stringify(todo)}</li>
+        <li>{JSON.stringify(todo)}</li>
       ))}
     </ul>
   )
