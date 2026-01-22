@@ -49,25 +49,32 @@ serve(async (req) => {
     try {
         switch (event.type) {
             // CRITICAL EVENT: Fired after a successful charge, including usage overage
-            case 'checkout.session.completed':
-            case 'invoice.payment_succeeded': {
+            case 'checkout.session.completed': {
                 const session = event.data.object as Stripe.Checkout.Session;
-                // 'user_id' must be passed from the front-end into the Stripe Checkout session's metadata
                 const userId = session.metadata?.user_id;
 
                 if (session.payment_status === 'paid' && userId) {
-                    // Update user's subscription record in the Supabase database [32]
-                    const { error } = await supabaseAdmin
-                       .from('subscriptions')
-                       .update({
-                            stripe_customer_id: session.customer as string,
-                            status: 'active', // Unlock full service access
-                            last_billed_at: new Date().toISOString()
-                        })
-                       .eq('user_id', userId);
+                    await updateUserSubscription(supabaseAdmin, userId, session.customer as string);
+                }
+                break;
+            }
+            case 'invoice.payment_succeeded': {
+                const invoice = event.data.object as Stripe.Invoice;
+                const customerId = invoice.customer as string;
 
-                    if (error) throw error;
-                    console.log(`User ${userId} service unlocked successfully.`);
+                if (invoice.status === 'paid' && customerId) {
+                     // Find user by stripe_customer_id since invoice might not have metadata
+                     const { data: user } = await supabaseAdmin
+                        .from('subscriptions')
+                        .select('user_id')
+                        .eq('stripe_customer_id', customerId)
+                        .single();
+
+                     if (user?.user_id) {
+                         await updateUserSubscription(supabaseAdmin, user.user_id, customerId);
+                     } else {
+                         console.error(`No user found for customer ${customerId}`);
+                     }
                 }
                 break;
             }
@@ -90,3 +97,17 @@ serve(async (req) => {
         headers: {...corsHeaders, 'Content-Type': 'application/json' }
     });
 });
+
+async function updateUserSubscription(supabase: any, userId: string, customerId: string) {
+    const { error } = await supabase
+        .from('subscriptions')
+        .update({
+            stripe_customer_id: customerId,
+            status: 'active',
+            last_billed_at: new Date().toISOString()
+        })
+        .eq('user_id', userId);
+
+    if (error) throw error;
+    console.log(`User ${userId} service unlocked successfully.`);
+}
