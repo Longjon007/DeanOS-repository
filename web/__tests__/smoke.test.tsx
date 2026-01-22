@@ -1,0 +1,10 @@
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+
+describe('Smoke Test', () => {
+  it('renders a heading', () => {
+    render(<h1>Hello World</h1>)
+    const heading = screen.getByRole('heading', { level: 1 })
+    expect(heading).toBeInTheDocument()
+  })
+})
