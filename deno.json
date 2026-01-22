@@ -1,0 +1,12 @@
+{
+  "lint": {
+    "exclude": ["app/", "web/", "**/node_modules/"],
+    "rules": {
+      "tags": ["recommended"],
+      "exclude": ["no-import-prefix"]
+    }
+  },
+  "fmt": {
+    "exclude": ["app/", "web/", "**/node_modules/"]
+  }
+}

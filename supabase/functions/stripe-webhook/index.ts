@@ -39,7 +39,8 @@ serve(async (req) => {
     try {
         const reqBody = await req.text();
         event = stripe.webhooks.constructEvent(reqBody, signature!, webhookSecret!);
-    } catch (err) {
+    // deno-lint-ignore no-explicit-any
+    } catch (err: any) {
         // If signature verification fails, reject the request immediately [29]
         console.error(`Webhook signature verification failed: ${err.message}`);
         return new Response(`Webhook Error: ${err.message}`, { status: 400 });
@@ -79,7 +80,8 @@ serve(async (req) => {
             default:
                 console.log(`Unhandled event type ${event.type}`);
         }
-    } catch (error) {
+    // deno-lint-ignore no-explicit-any
+    } catch (error: any) {
         console.error(`Error processing Stripe event: ${error.message}`);
         return new Response(JSON.stringify({ error: 'Failed to process event' }), { status: 500 });
     }
