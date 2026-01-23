@@ -1,1 +1,10 @@
 .env
+.env*
+**/node_modules/
+dist/
+build/
+.next/
+**/.next/
+web/.next/
+coverage/
+*.log
