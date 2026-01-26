@@ -204,6 +204,26 @@ fi
 # Check MCP Configuration
 if [ -f "mcp.json" ]; then
     check_pass "MCP configuration exists"
+
+    # Verify Project ID matches
+    if [ -f "supabase/config.toml" ]; then
+        # Extract project_id from config.toml (looking for project_id = "...")
+        PROJECT_ID=$(grep 'project_id' supabase/config.toml | cut -d '"' -f 2)
+
+        # Extract project_ref from mcp.json URL
+        MCP_URL=$(grep '"url"' mcp.json | cut -d '"' -f 4)
+        PROJECT_REF=$(echo "$MCP_URL" | sed -n 's/.*project_ref=\([^&]*\).*/\1/p')
+
+        if [ -n "$PROJECT_ID" ] && [ -n "$PROJECT_REF" ]; then
+            if [ "$PROJECT_ID" == "$PROJECT_REF" ]; then
+                check_pass "Project ID matches in config.toml and mcp.json ($PROJECT_ID)"
+            else
+                check_fail "Project ID mismatch: config.toml ($PROJECT_ID) vs mcp.json ($PROJECT_REF)"
+            fi
+        else
+            check_warn "Could not extract Project ID for comparison"
+        fi
+    fi
 else
     check_warn "MCP configuration is missing"
 fi
